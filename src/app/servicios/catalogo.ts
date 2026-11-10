@@ -90,4 +90,37 @@ export class CatalogoService {
   eliminar(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  // Endpoints para Administrador (Crear Productos)
+  crearCasco(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/cascos`, data);
+  }
+
+  crearChaqueta(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/chaquetas`, data);
+  }
+
+  crearGuantes(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/guantes`, data);
+  }
+
+  crearImpermeable(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/impermeables`, data);
+  }
+
+  crearBaul(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/baules`, data);
+  }
+
+  crearIntercomunicador(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/intercomunicadores`, data);
+  }
+
+  crearSoporteCelular(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/soportes-celular`, data);
+  }
+
+  crearVisor(data: any): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(`${this.baseUrl}/visores`, data);
+  }
 }

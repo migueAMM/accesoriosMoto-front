@@ -317,4 +317,148 @@ export class Catalogo implements OnInit {
     if (prod.precioMonto > 500000) return 'PREMIUM';
     return 'ORIGINAL';
   }
+
+  // --- MODAL DE CREACIÓN DE PRODUCTOS (SOLO ADMINISTRADOR) ---
+  modalCrearAbierto = signal<boolean>(false);
+  guardandoProducto = signal<boolean>(false);
+
+  // Formulario nuevo producto
+  nuevoProducto = {
+    tipo: 'Casco',
+    marcaNombre: 'AGV',
+    color: 'Negro',
+    precioMonto: 650000,
+    modelo: 'K3 SV Racing',
+    talla: 'M',
+    material: 'Policarbonato de alta resistencia',
+    proteccion: 'EPS 4 densidades + Almohadillas desmontables',
+    certificacionSeguridad: 'ECE 22.06 / DOT',
+    capacidadLitros: 45,
+    dimensiones: '40x35x30 cm',
+    capacidadMaximaCarga: 10,
+    alcanceMetros: 1200,
+    autonomiaHoras: 13,
+    bluetooth: 'Bluetooth 5.2 Mesh',
+    tipoSujecion: 'Manubrio con amortiguador antivibración',
+    tipoVisor: 'Transparente Antirrayas Pinlock Ready',
+  };
+
+  abrirModalCrear(): void {
+    this.modalCrearAbierto.set(true);
+  }
+
+  cerrarModalCrear(): void {
+    this.modalCrearAbierto.set(false);
+  }
+
+  guardarNuevoProducto(): void {
+    const p = this.nuevoProducto;
+    const marcaId = 'marca-' + p.marcaNombre.toLowerCase().replace(/\s+/g, '-');
+    const precioMoneda = 'COP';
+
+    this.guardandoProducto.set(true);
+
+    let obs;
+    if (p.tipo === 'Casco') {
+      obs = this.catalogoService.crearCasco({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        modelo: p.modelo,
+        color: p.color,
+        talla: p.talla,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        proteccion: p.proteccion,
+        certificacionSeguridad: p.certificacionSeguridad,
+      });
+    } else if (p.tipo === 'Chaqueta') {
+      obs = this.catalogoService.crearChaqueta({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        talla: p.talla,
+        material: p.material,
+        proteccion: p.proteccion,
+      });
+    } else if (p.tipo === 'Guantes') {
+      obs = this.catalogoService.crearGuantes({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        talla: p.talla,
+        material: p.material,
+        proteccion: p.proteccion,
+      });
+    } else if (p.tipo === 'Impermeable') {
+      obs = this.catalogoService.crearImpermeable({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        talla: p.talla,
+        material: p.material,
+      });
+    } else if (p.tipo === 'Baul') {
+      obs = this.catalogoService.crearBaul({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        material: p.material,
+        capacidadLitros: p.capacidadLitros,
+        dimensiones: p.dimensiones,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        capacidadMaximaCarga: p.capacidadMaximaCarga,
+        color: p.color,
+      });
+    } else if (p.tipo === 'Intercomunicador') {
+      obs = this.catalogoService.crearIntercomunicador({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        alcanceMetros: p.alcanceMetros,
+        autonomiaHoras: p.autonomiaHoras,
+        bluetooth: p.bluetooth,
+      });
+    } else if (p.tipo === 'SoporteCelular') {
+      obs = this.catalogoService.crearSoporteCelular({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        tipoSujecion: p.tipoSujecion,
+      });
+    } else {
+      obs = this.catalogoService.crearVisor({
+        marcaId,
+        marcaNombre: p.marcaNombre,
+        precioMonto: p.precioMonto,
+        precioMoneda,
+        color: p.color,
+        tipoVisor: p.tipoVisor,
+        modelosCascoCompatibles: ['AGV K3', 'AGV K1', 'LS2 Stream'],
+      });
+    }
+
+    obs.subscribe({
+      next: (creado) => {
+        this.guardandoProducto.set(false);
+        this.cerrarModalCrear();
+        this.mensaje.set(`¡Producto creado exitosamente! ID: ${creado.id}`);
+        this.cargarProductos(0);
+        setTimeout(() => this.mensaje.set(null), 5000);
+      },
+      error: (err) => {
+        this.guardandoProducto.set(false);
+        this.error.set('Error al crear producto: ' + (err.error?.mensaje || err.message));
+      },
+    });
+  }
 }

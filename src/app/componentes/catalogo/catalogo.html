@@ -178,9 +178,21 @@
         <span class="results-counter">
           Mostrando <strong>{{ productos().length }}</strong> accesorios disponibles
         </span>
-        <div class="sort-selector-wrapper">
-          <span class="sort-label">Categoría activa:</span>
-          <span class="active-cat-tag">{{ categoriaActiva() }}</span>
+
+        <div class="top-bar-admin-actions">
+          @if (authService.esAdmin()) {
+            <button (click)="abrirModalCrear()" class="btn-add-product">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>AGREGAR PRODUCTO</span>
+            </button>
+          }
+          <div class="sort-selector-wrapper">
+            <span class="sort-label">Categoría activa:</span>
+            <span class="active-cat-tag">{{ categoriaActiva() }}</span>
+          </div>
         </div>
       </div>
 
@@ -278,4 +290,160 @@
       }
     </main>
   </div>
+
+  <!-- MODAL: AGREGAR PRODUCTO (ADMINISTRADOR) -->
+  @if (modalCrearAbierto()) {
+    <div class="modal-backdrop" (click)="cerrarModalCrear()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="modal-eyebrow">PANEL ADMINISTRADOR</span>
+            <h2 class="modal-title">REGISTRAR NUEVO ACCESORIO</h2>
+          </div>
+          <button (click)="cerrarModalCrear()" class="btn-modal-close" aria-label="Cerrar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <form (ngSubmit)="guardarNuevoProducto()" class="modal-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">TIPO DE PRODUCTO</label>
+              <select [(ngModel)]="nuevoProducto.tipo" name="tipo" class="form-select">
+                <option value="Casco">Casco</option>
+                <option value="Chaqueta">Chaqueta</option>
+                <option value="Guantes">Guantes</option>
+                <option value="Impermeable">Impermeable</option>
+                <option value="Baul">Baúl / Maleta</option>
+                <option value="Intercomunicador">Intercomunicador</option>
+                <option value="SoporteCelular">Soporte Celular</option>
+                <option value="Visor">Visor</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">MARCA</label>
+              <input type="text" [(ngModel)]="nuevoProducto.marcaNombre" name="marcaNombre" class="form-input" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="field-label">COLOR</label>
+              <input type="text" [(ngModel)]="nuevoProducto.color" name="color" class="form-input" required />
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">PRECIO (COP)</label>
+              <input type="number" [(ngModel)]="nuevoProducto.precioMonto" name="precioMonto" class="form-input" required min="1000" />
+            </div>
+          </div>
+
+          <!-- Campos para Casco -->
+          @if (nuevoProducto.tipo === 'Casco') {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">MODELO</label>
+                <input type="text" [(ngModel)]="nuevoProducto.modelo" name="modelo" class="form-input" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">TALLA</label>
+                <input type="text" [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input" placeholder="S, M, L, XL" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">PROTECCIÓN</label>
+                <input type="text" [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">CERTIFICACIÓN</label>
+                <input type="text" [(ngModel)]="nuevoProducto.certificacionSeguridad" name="certificacionSeguridad" class="form-input" placeholder="ECE 22.06, DOT" />
+              </div>
+            </div>
+          }
+
+          <!-- Campos para Chaqueta o Guantes -->
+          @if (nuevoProducto.tipo === 'Chaqueta' || nuevoProducto.tipo === 'Guantes') {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">MATERIAL</label>
+                <input type="text" [(ngModel)]="nuevoProducto.material" name="material" class="form-input" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">TALLA</label>
+                <input type="text" [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label">NIVEL DE PROTECCIÓN</label>
+              <input type="text" [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input" placeholder="Protecciones CE Nivel 2" />
+            </div>
+          }
+
+          <!-- Campos para Baúl -->
+          @if (nuevoProducto.tipo === 'Baul') {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">CAPACIDAD (LITROS)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.capacidadLitros" name="capacidadLitros" class="form-input" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">CARGA MÁXIMA (KG)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.capacidadMaximaCarga" name="capacidadMaximaCarga" class="form-input" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label">DIMENSIONES</label>
+              <input type="text" [(ngModel)]="nuevoProducto.dimensiones" name="dimensiones" class="form-input" placeholder="45x40x32 cm" />
+            </div>
+          }
+
+          <!-- Campos para Intercomunicador -->
+          @if (nuevoProducto.tipo === 'Intercomunicador') {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">ALCANCE (METROS)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.alcanceMetros" name="alcanceMetros" class="form-input" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">AUTONOMÍA (HORAS)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.autonomiaHoras" name="autonomiaHoras" class="form-input" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label">TECNOLOGÍA BLUETOOTH</label>
+              <input type="text" [(ngModel)]="nuevoProducto.bluetooth" name="bluetooth" class="form-input" placeholder="Bluetooth 5.2 Dynamic Mesh" />
+            </div>
+          }
+
+          <!-- Campos para Soporte Celular -->
+          @if (nuevoProducto.tipo === 'SoporteCelular') {
+            <div class="form-field">
+              <label class="field-label">TIPO DE SUJECIÓN</label>
+              <input type="text" [(ngModel)]="nuevoProducto.tipoSujecion" name="tipoSujecion" class="form-input" placeholder="Manubrio, Espejo retrovisor" />
+            </div>
+          }
+
+          <!-- Campos para Visor -->
+          @if (nuevoProducto.tipo === 'Visor') {
+            <div class="form-field">
+              <label class="field-label">TIPO DE VISOR</label>
+              <input type="text" [(ngModel)]="nuevoProducto.tipoVisor" name="tipoVisor" class="form-input" placeholder="Transparente, Humo oscuro, Iridium Azul" />
+            </div>
+          }
+
+          <div class="modal-footer">
+            <button type="button" (click)="cerrarModalCrear()" class="btn-cancel">Cancelar</button>
+            <button type="submit" [disabled]="guardandoProducto()" class="btn-submit-product">
+              {{ guardandoProducto() ? 'Guardando en BD...' : 'Crear Producto en Backend' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
 </div>
