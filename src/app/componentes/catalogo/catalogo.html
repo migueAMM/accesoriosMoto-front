@@ -1,0 +1,275 @@
+<div class="store-page">
+  <!-- Cabecera -->
+  <section class="catalog-header-bar">
+    <div class="header-bar-inner">
+      <nav class="breadcrumb">
+        <span>INICIO</span>
+        <span class="bc-sep">/</span>
+        <span class="bc-current">TIENDA & CATÁLOGO</span>
+      </nav>
+      <h1 class="catalog-main-title">CATÁLOGO DE EQUIPAMIENTO</h1>
+      <p class="catalog-subtitle">Cascos certificados, indumentaria con protecciones homologadas y repuestos originales.</p>
+
+      <!-- PESTAÑAS DE NAVEGACIÓN RÁPIDA POR CATEGORÍA -->
+      <div class="category-tabs-bar">
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="categoriaActiva() === 'TODOS'"
+          (click)="cambiarCategoria('TODOS')"
+        >
+          TODOS
+        </button>
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="categoriaActiva() === 'CASCOS'"
+          (click)="cambiarCategoria('CASCOS')"
+        >
+          CASCOS
+        </button>
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="categoriaActiva() === 'TEXTIL'"
+          (click)="cambiarCategoria('TEXTIL')"
+        >
+          TEXTIL (CHAQUETAS & GUANTES)
+        </button>
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="categoriaActiva() === 'ACCESORIOS'"
+          (click)="cambiarCategoria('ACCESORIOS')"
+        >
+          ACCESORIOS & INTERCOM
+        </button>
+        <button
+          type="button"
+          class="cat-tab-btn"
+          [class.active]="categoriaActiva() === 'REPUESTOS'"
+          (click)="cambiarCategoria('REPUESTOS')"
+        >
+          REPUESTOS & VISORES
+        </button>
+        <button
+          type="button"
+          class="cat-tab-btn tab-outlet"
+          [class.active]="categoriaActiva() === 'OUTLET'"
+          (click)="cambiarCategoria('OUTLET')"
+        >
+          OUTLET
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notificaciones -->
+  @if (mensaje()) {
+    <div class="toast-alert toast-success">
+      <svg class="toast-svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+      </svg>
+      <span>{{ mensaje() }}</span>
+      <button (click)="mensaje.set(null)" class="toast-close">Cerrar</button>
+    </div>
+  }
+  @if (error()) {
+    <div class="toast-alert toast-error">
+      <svg class="toast-svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+      </svg>
+      <span>{{ error() }}</span>
+      <button (click)="error.set(null)" class="toast-close">Cerrar</button>
+    </div>
+  }
+
+  <div class="catalog-body">
+    <!-- SIDEBAR DE FILTROS -->
+    <aside class="catalog-sidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">FILTRAR POR</h3>
+        <button (click)="limpiarFiltros()" class="btn-clear-filters">Limpiar filtros</button>
+      </div>
+
+      <!-- Buscador -->
+      <div class="filter-group">
+        <label class="filter-label">BÚSQUEDA</label>
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            [(ngModel)]="busquedaTexto"
+            placeholder="Buscar modelo o accesorio..."
+            (keyup.enter)="aplicarFiltros()"
+            class="input-search"
+          />
+          <button (click)="aplicarFiltros()" class="btn-search-icon" aria-label="Buscar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Marcas -->
+      <div class="filter-group">
+        <label class="filter-label">MARCAS</label>
+        <div class="checkbox-list">
+          @for (m of marcasDisponibles; track m) {
+            <label class="custom-checkbox-row">
+              <input type="radio" name="filtroMarca" [checked]="filtroMarca === m" (change)="seleccionarMarca(m)" />
+              <span class="checkbox-box"></span>
+              <span class="checkbox-text">{{ m }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Colores -->
+      <div class="filter-group">
+        <label class="filter-label">COLOR</label>
+        <div class="color-chips-list">
+          @for (c of coloresDisponibles; track c) {
+            <button
+              type="button"
+              class="color-chip-btn"
+              [class.chip-active]="filtroColor === c"
+              (click)="seleccionarColor(c)"
+            >
+              {{ c }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Precio -->
+      <div class="filter-group">
+        <label class="filter-label">RANGO DE PRECIO (COP)</label>
+        <div class="price-inputs-row">
+          <input type="number" [(ngModel)]="precioMin" placeholder="Mín" class="price-input" />
+          <span class="price-dash">-</span>
+          <input type="number" [(ngModel)]="precioMax" placeholder="Máx" class="price-input" />
+        </div>
+        <button (click)="aplicarFiltros()" class="btn-apply-price">Aplicar Rango</button>
+      </div>
+
+      <!-- Compatibilidad -->
+      <div class="filter-group">
+        <label class="filter-label">COMPATIBILIDAD</label>
+        <select [(ngModel)]="compatibilidadTipo" (change)="aplicarFiltros()" class="select-biker">
+          <option value="">Cualquier tipo</option>
+          <option value="MOTO">Específico para Moto</option>
+          <option value="CASCO">Específico para Casco</option>
+        </select>
+        <input
+          type="text"
+          [(ngModel)]="compatibilidadModelo"
+          placeholder="Ej: MT-07, K3..."
+          (keyup.enter)="aplicarFiltros()"
+          class="input-search mt-2"
+        />
+      </div>
+    </aside>
+
+    <!-- CUADRÍCULA DE PRODUCTOS -->
+    <main class="catalog-products-area">
+      <div class="products-top-bar">
+        <span class="results-counter">
+          Mostrando <strong>{{ productos().length }}</strong> accesorios disponibles
+        </span>
+        <div class="sort-selector-wrapper">
+          <span class="sort-label">Categoría activa:</span>
+          <span class="active-cat-tag">{{ categoriaActiva() }}</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (cargando()) {
+        <div class="store-loading">
+          <div class="biker-spinner"></div>
+          <p>Cargando productos de la base de datos...</p>
+        </div>
+      } @else {
+        @if (productos().length === 0) {
+          <!-- Empty State sin emojis -->
+          <div class="no-products-box">
+            <svg class="no-products-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            <h3>No se encontraron productos</h3>
+            <p>No hay artículos que coincidan con los filtros seleccionados.</p>
+            <button (click)="limpiarFiltros()" class="btn-action-primary mt-3">Restablecer Filtros</button>
+          </div>
+        } @else {
+          <!-- Grid Responsiva -->
+          <div class="products-grid">
+            @for (prod of productos(); track prod.id) {
+              <article class="biker-card">
+                <!-- Media & Badges -->
+                <div class="card-media">
+                  <span class="floating-badge badge-tag">{{ obtenerBadge(prod) }}</span>
+                  @if (prod.estadoPublicacion !== 'PUBLICADO') {
+                    <span class="floating-badge badge-draft">BORRADOR</span>
+                  }
+                  <img [src]="obtenerImagen(prod)" [alt]="prod.tipo" class="card-img" loading="lazy" />
+
+                  <!-- Botón Deslizable Hover -->
+                  <div class="quick-hover-bar">
+                    <button
+                      class="btn-quick-buy"
+                      [disabled]="prod.estadoPublicacion !== 'PUBLICADO'"
+                      (click)="comprar(prod)"
+                    >
+                      <span>AÑADIR AL CARRITO</span>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Info -->
+                <div class="card-details">
+                  <span class="card-category">{{ prod.tipo }}</span>
+                  <h3 class="card-product-name">{{ prod.marca }} - {{ prod.tipo }}</h3>
+
+                  <div class="card-attributes">
+                    <span class="attr-pill">Color: {{ prod.color }}</span>
+                    <span class="attr-pill sku">ID: {{ prod.id }}</span>
+                  </div>
+
+                  <div class="card-price-row">
+                    <span class="price-val">{{ prod.precioMonto | currency: prod.precioMoneda:'symbol':'1.0-0' }}</span>
+                    <span class="price-curr">{{ prod.precioMoneda }}</span>
+                  </div>
+
+                  @if (authService.esAdmin()) {
+                    <div class="admin-panel-strip">
+                      <button (click)="togglePublicacion(prod)" class="btn-admin-act">
+                        {{ prod.estadoPublicacion === 'PUBLICADO' ? 'Despublicar' : 'Publicar' }}
+                      </button>
+                      <button (click)="eliminar(prod)" class="btn-admin-act btn-delete">Borrar</button>
+                    </div>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+
+          <!-- Paginación -->
+          @if (totalPaginas() > 1) {
+            <div class="store-pagination">
+              <button class="page-nav-btn" [disabled]="pagina() === 0" (click)="cargarProductos(pagina() - 1)">← Anterior</button>
+              <span class="page-numbers"><strong class="page-current">{{ pagina() + 1 }}</strong> de {{ totalPaginas() }}</span>
+              <button class="page-nav-btn" [disabled]="pagina() + 1 >= totalPaginas()" (click)="cargarProductos(pagina() + 1)">Siguiente →</button>
+            </div>
+          }
+        }
+      }
+    </main>
+  </div>
+</div>

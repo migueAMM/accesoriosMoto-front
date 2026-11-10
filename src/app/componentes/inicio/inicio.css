@@ -1,0 +1,569 @@
+.home-wrapper {
+  background-color: #f8f9fa;
+  overflow-x: hidden;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* --- MOSAICO PROMOCIONAL (INDU CASCOS STYLE) --- */
+.promo-mosaic-section {
+  max-width: 1400px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1.5rem;
+}
+
+.mosaic-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr;
+  grid-template-rows: 240px 240px;
+  gap: 1rem;
+}
+
+.mosaic-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #111827;
+  display: flex;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-smooth);
+}
+
+.mosaic-card:hover {
+  transform: scale(1.01);
+}
+
+.mosaic-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 1;
+}
+
+.mosaic-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  transition: transform var(--transition-smooth);
+}
+
+.mosaic-card:hover .mosaic-bg-img {
+  transform: scale(1.05);
+}
+
+.mosaic-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #ffffff;
+}
+
+/* Tarjeta Hero (Ocupa 2 filas) */
+.card-hero-helmet {
+  grid-row: span 2;
+}
+
+.card-hero-helmet .mosaic-overlay {
+  background: linear-gradient(to right, rgba(17, 17, 17, 0.95) 0%, rgba(227, 24, 55, 0.4) 100%);
+}
+
+.mosaic-badge {
+  display: inline-block;
+  background-color: #e31837;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  margin-bottom: 0.75rem;
+  width: fit-content;
+}
+
+.mosaic-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+
+.mosaic-subtitle {
+  font-size: 0.95rem;
+  color: #d1d5db;
+  margin-bottom: 1.5rem;
+  max-width: 440px;
+}
+
+.btn-mosaic-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #e31837;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  width: fit-content;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-mosaic-action:hover {
+  background-color: #b8122c;
+}
+
+/* Tarjetas secundarias */
+.mosaic-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.mosaic-title-sm {
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.btn-mosaic-outline {
+  display: inline-block;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 1rem;
+  border-radius: 3px;
+  width: fit-content;
+  transition: all var(--transition-fast);
+}
+
+.btn-mosaic-outline:hover {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* Tarjeta Combo */
+.card-combo {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  display: flex;
+  align-items: center;
+}
+
+.mosaic-content-combo {
+  padding: 1.5rem;
+  color: #ffffff;
+}
+
+.combo-badge {
+  background-color: rgba(0, 0, 0, 0.3);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.combo-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  margin-bottom: 0.35rem;
+}
+
+.combo-price {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fef08a;
+  margin-bottom: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.45rem 1rem;
+  font-size: 0.75rem;
+}
+
+/* Tarjeta Flash Azul */
+.card-flash {
+  background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 100%);
+  display: flex;
+  align-items: center;
+}
+
+.mosaic-content-center {
+  padding: 1.5rem;
+  color: #ffffff;
+}
+
+.flash-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #93c5fd;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.flash-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 0.35rem;
+}
+
+.flash-desc {
+  font-size: 0.75rem;
+  color: #e0f2fe;
+  margin-bottom: 0.85rem;
+}
+
+.btn-mosaic-white {
+  background-color: #ffffff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 0.5rem 1.25rem;
+  border-radius: 3px;
+  display: inline-block;
+  transition: all var(--transition-fast);
+}
+
+.btn-mosaic-white:hover {
+  background-color: #f1f5f9;
+}
+
+/* --- SECCIÓN CÍRCULOS DE CASCOS (TIPO INDUCASCOS) --- */
+.helmet-types-section {
+  background-color: #ffffff;
+  padding: 3.5rem 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.types-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.section-heading {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+
+.help-link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e31837;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.help-icon {
+  width: 18px;
+  height: 18px;
+  background-color: #e31837;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.types-carousel-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+
+.type-circle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  group: hover;
+}
+
+.circle-outer {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all var(--transition-smooth);
+  border: 2px solid transparent;
+}
+
+.type-circle-card:hover .circle-outer {
+  border-color: #e31837;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(227, 24, 55, 0.15);
+}
+
+.circle-inner {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.type-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
+}
+
+.type-circle-card:hover .type-img {
+  transform: scale(1.1);
+}
+
+.type-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.2rem;
+}
+
+.type-tag {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+/* --- BANNER DE MARCAS (STRIP) --- */
+.brands-strip-section {
+  background-color: #111827;
+  padding: 1.5rem 0;
+}
+
+.brands-track {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.brand-item {
+  color: #6b7280;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  transition: color var(--transition-fast);
+}
+
+.brand-item:hover {
+  color: #ffffff;
+}
+
+/* --- PRODUCTOS DESTACADOS --- */
+.featured-products-section {
+  padding: 4.5rem 0;
+}
+
+.featured-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #111827;
+  padding-bottom: 1rem;
+}
+
+.section-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #e31837;
+  margin-bottom: 0.25rem;
+}
+
+.btn-view-all {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-fast);
+}
+
+.btn-view-all:hover {
+  color: #e31837;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.featured-item-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: #d1d5db;
+}
+
+.item-img-box {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.item-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #111827;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  z-index: 2;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
+}
+
+.featured-item-card:hover .item-img {
+  transform: scale(1.08);
+}
+
+.item-info {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.item-brand {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.item-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.item-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: auto;
+  margin-bottom: 1rem;
+}
+
+.item-price {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #e31837;
+}
+
+.item-curr {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.btn-card-act {
+  display: block;
+  text-align: center;
+  background-color: #111827;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.65rem;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-card-act:hover {
+  background-color: #e31837;
+}
+
+.loading-box {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
+  .mosaic-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .card-hero-helmet {
+    grid-column: span 2;
+    grid-row: auto;
+    height: 300px;
+  }
+  .types-carousel-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .mosaic-grid {
+    grid-template-columns: 1fr;
+  }
+  .card-hero-helmet {
+    grid-column: span 1;
+  }
+  .types-carousel-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+}

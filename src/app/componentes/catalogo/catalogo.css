@@ -1,0 +1,588 @@
+.store-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+}
+
+.catalog-header-bar {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.bc-current {
+  color: #e31837;
+}
+
+.catalog-main-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.03em;
+}
+
+.catalog-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Pestañas de Categoría Biker */
+.category-tabs-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+.cat-tab-btn {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cat-tab-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.cat-tab-btn.active {
+  background-color: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.cat-tab-btn.tab-outlet {
+  border-color: #e31837;
+  color: #e31837;
+}
+
+.cat-tab-btn.tab-outlet.active {
+  background-color: #e31837;
+  color: #ffffff;
+}
+
+/* Toast */
+.toast-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.toast-svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.toast-success {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-left: 4px solid #10b981;
+}
+
+.toast-error {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-left: 4px solid #e31837;
+}
+
+.toast-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Sidebar + Grid Layout */
+.catalog-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.catalog-sidebar {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 90px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #111827;
+  padding-bottom: 0.75rem;
+}
+
+.sidebar-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #111827;
+}
+
+.btn-clear-filters {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e31837;
+  cursor: pointer;
+}
+
+.filter-group {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #374151;
+  margin-bottom: 0.75rem;
+}
+
+.input-search {
+  width: 100%;
+  padding: 0.6rem 2.2rem 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background-color: #f9fafb;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.btn-search-icon {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #4b5563;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-search-icon:hover {
+  color: #e31837;
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.custom-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.custom-checkbox-row input {
+  display: none;
+}
+
+.checkbox-box {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #9ca3af;
+  border-radius: 3px;
+  position: relative;
+}
+
+.custom-checkbox-row input:checked + .checkbox-box {
+  background-color: #e31837;
+  border-color: #e31837;
+}
+
+.custom-checkbox-row input:checked + .checkbox-box::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 4px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.color-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.color-chip-btn {
+  padding: 0.35rem 0.65rem;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.color-chip-btn.chip-active {
+  background-color: #111827;
+  color: #ffffff;
+}
+
+.price-inputs-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.price-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.btn-apply-price {
+  width: 100%;
+  background-color: #111827;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-apply-price:hover {
+  background-color: #e31837;
+}
+
+.select-biker {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+
+/* Grid de Productos */
+.products-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.active-cat-tag {
+  background-color: #e31837;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+}
+
+/* Tarjeta Biker */
+.biker-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.biker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12);
+}
+
+.card-media {
+  position: relative;
+  background-color: #f3f4f6;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.biker-card:hover .card-img {
+  transform: scale(1.08);
+}
+
+.floating-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  z-index: 2;
+}
+
+.badge-tag {
+  background-color: #111827;
+  color: #ffffff;
+}
+
+.badge-draft {
+  left: auto;
+  right: 12px;
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.quick-hover-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.75rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+}
+
+.biker-card:hover .quick-hover-bar {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.btn-quick-buy {
+  width: 100%;
+  background-color: #e31837;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-quick-buy:hover {
+  background-color: #b8122c;
+}
+
+.card-details {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-category {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.card-product-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.card-attributes {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.attr-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #4b5563;
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.price-val {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #e31837;
+}
+
+.price-curr {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.admin-panel-strip {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-admin-act {
+  flex: 1;
+  padding: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-admin-act.btn-delete {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+/* Empty State sin emojis */
+.no-products-box {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+}
+
+.no-products-svg {
+  width: 56px;
+  height: 56px;
+  color: #9ca3af;
+  margin: 0 auto 1rem;
+}
+
+.no-products-box h3 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.no-products-box p {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.btn-action-primary {
+  display: inline-block;
+  background-color: #e31837;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.store-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3.5rem;
+}
+
+.page-nav-btn {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.page-nav-btn:hover:not(:disabled) {
+  background-color: #111827;
+  color: #ffffff;
+}
+
+.page-current {
+  color: #e31837;
+  font-weight: 900;
+}
+
+@media (max-width: 1024px) {
+  .catalog-body { grid-template-columns: 1fr; }
+  .catalog-sidebar { position: static; }
+}

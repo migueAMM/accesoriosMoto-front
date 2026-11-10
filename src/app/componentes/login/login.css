@@ -1,0 +1,314 @@
+.auth-biker-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 960px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+/* Panel Izquierdo */
+.auth-brand-panel {
+  background: linear-gradient(135deg, #111111 0%, #1f2228 100%);
+  color: #ffffff;
+  padding: 3.5rem 2.5rem;
+  display: flex;
+  align-items: center;
+  border-right: 2px solid #e31837;
+}
+
+.brand-panel-content {
+  position: relative;
+  z-index: 2;
+}
+
+.auth-badge {
+  display: inline-block;
+  background-color: #e31837;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+
+.brand-panel-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.brand-panel-desc {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.biker-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.perk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.perk-svg {
+  width: 22px;
+  height: 22px;
+  color: #e31837;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.perk-row strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin-bottom: 0.15rem;
+}
+
+.perk-row p {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Panel Derecho: Formulario */
+.auth-card-panel {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-nav-tabs {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 2rem;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.auth-tab-btn.active-tab {
+  color: #111111;
+}
+
+.auth-tab-btn.active-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #e31837;
+}
+
+.biker-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.alert-success {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border-left: 3px solid #10b981;
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border-left: 3px solid #ef4444;
+}
+
+.biker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #374151;
+}
+
+.label-with-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-pass-link {
+  font-size: 0.75rem;
+  color: #e31837;
+  font-weight: 600;
+}
+
+.biker-input {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #f9fafb;
+}
+
+.biker-input:focus {
+  outline: none;
+  border-color: #111111;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.1);
+}
+
+.btn-submit-biker {
+  margin-top: 0.5rem;
+  background-color: #e31837;
+  color: #ffffff;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit-biker:hover:not(:disabled) {
+  background-color: #b8122c;
+}
+
+.btn-submit-biker:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.active-session-box {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.session-avatar {
+  margin-bottom: 0.75rem;
+}
+
+.session-welcome {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.session-email {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.session-role-pill {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border-radius: 9999px;
+  margin-bottom: 2rem;
+}
+
+.session-role-pill.admin-role {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.session-quick-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-primary-action {
+  background-color: #111827;
+  color: #ffffff;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.btn-primary-action:hover {
+  background-color: #e31837;
+}
+
+.btn-logout-action {
+  background: none;
+  border: 1px solid #d1d5db;
+  color: #ef4444;
+  padding: 0.65rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout-action:hover {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+}
+
+@media (max-width: 820px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+  .auth-brand-panel {
+    display: none;
+  }
+}

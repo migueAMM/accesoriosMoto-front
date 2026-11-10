@@ -1,1 +1,182 @@
-<p>login works!</p>
+<div class="auth-biker-page">
+  <div class="auth-container">
+    <!-- Panel Izquierdo: Branding Motero -->
+    <div class="auth-brand-panel">
+      <div class="brand-panel-content">
+        <span class="auth-badge">COMUNIDAD BIKER</span>
+        <h2 class="brand-panel-title">TU PASIÓN EN DOS RUEDAS COMIENZA AQUÍ</h2>
+        <p class="brand-panel-desc">
+          Accede a tu historial de pedidos, seguimiento de envíos en tiempo real y promociones exclusivas.
+        </p>
+
+        <div class="biker-perks">
+          <div class="perk-row">
+            <svg class="perk-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <div>
+              <strong>Seguridad Certificada</strong>
+              <p>Productos con homologación oficial ECE 22.06 y DOT.</p>
+            </div>
+          </div>
+          <div class="perk-row">
+            <svg class="perk-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <div>
+              <strong>Despacho Prioritario</strong>
+              <p>Envíos asegurados y trazabilidad a nivel nacional.</p>
+            </div>
+          </div>
+          <div class="perk-row">
+            <svg class="perk-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <div>
+              <strong>Garantía y Reembolsos</strong>
+              <p>Gestión directa de devoluciones en el sistema.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel Derecho: Formulario de Autenticación -->
+    <div class="auth-card-panel">
+      @if (authService.estaAutenticado()) {
+        <!-- Vista Perfil Sesión Activa -->
+        <div class="active-session-box">
+          <div class="session-avatar">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#e31837" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <h3 class="session-welcome">SESION ACTIVA</h3>
+          <p class="session-email">{{ authService.sesion()?.correo }}</p>
+          <div class="session-role-pill" [class.admin-role]="authService.esAdmin()">
+            ROL: {{ authService.sesion()?.rol }}
+          </div>
+
+          <div class="session-quick-links">
+            <a routerLink="/catalogo" class="btn-primary-action">EXPLORAR CATÁLOGO</a>
+            <button (click)="cerrarSesion()" class="btn-logout-action">Cerrar Sesión</button>
+          </div>
+        </div>
+      } @else {
+        <!-- Tabs de Selección -->
+        <div class="auth-nav-tabs">
+          <button
+            class="auth-tab-btn"
+            [class.active-tab]="!esModoRegistro()"
+            (click)="cambiarModo(false)"
+          >
+            INICIAR SESIÓN
+          </button>
+          <button
+            class="auth-tab-btn"
+            [class.active-tab]="esModoRegistro()"
+            (click)="cambiarModo(true)"
+          >
+            CREAR CUENTA
+          </button>
+        </div>
+
+        <!-- Alertas -->
+        @if (mensaje()) {
+          <div class="biker-alert alert-success">{{ mensaje() }}</div>
+        }
+        @if (error()) {
+          <div class="biker-alert alert-error">{{ error() }}</div>
+        }
+
+        <!-- FORMULARIO DE LOGIN -->
+        @if (!esModoRegistro()) {
+          <form (ngSubmit)="iniciarSesion()" class="biker-form">
+            <div class="form-field">
+              <label for="loginEmail">CORREO ELECTRÓNICO</label>
+              <input
+                id="loginEmail"
+                type="email"
+                [(ngModel)]="loginCorreo"
+                name="correo"
+                placeholder="ejemplo@correo.com"
+                required
+                class="biker-input"
+              />
+            </div>
+
+            <div class="form-field">
+              <div class="label-with-link">
+                <label for="loginPass">CONTRASEÑA</label>
+                <a href="#olvido" class="forgot-pass-link">¿Olvidaste tu clave?</a>
+              </div>
+              <input
+                id="loginPass"
+                type="password"
+                [(ngModel)]="loginClave"
+                name="clave"
+                placeholder="••••••••"
+                required
+                class="biker-input"
+              />
+            </div>
+
+            <button type="submit" class="btn-submit-biker" [disabled]="cargando()">
+              {{ cargando() ? 'INGRESANDO AL SISTEMA...' : 'INICIAR SESIÓN' }}
+            </button>
+          </form>
+        } @else {
+          <!-- FORMULARIO DE REGISTRO COMPRADOR -->
+          <form (ngSubmit)="registrar()" class="biker-form">
+            <div class="form-field">
+              <label for="regName">NOMBRE COMPLETO</label>
+              <input
+                id="regName"
+                type="text"
+                [(ngModel)]="registroNombre"
+                name="nombre"
+                placeholder="Juan Pérez"
+                required
+                class="biker-input"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="regMail">CORREO ELECTRÓNICO</label>
+              <input
+                id="regMail"
+                type="email"
+                [(ngModel)]="registroCorreo"
+                name="correo"
+                placeholder="juan@correo.com"
+                required
+                class="biker-input"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="regPass">CONTRASEÑA (MÍNIMO 8 CARACTERES)</label>
+              <input
+                id="regPass"
+                type="password"
+                [(ngModel)]="registroClave"
+                name="clave"
+                placeholder="••••••••"
+                minlength="8"
+                required
+                class="biker-input"
+              />
+            </div>
+
+            <button type="submit" class="btn-submit-biker" [disabled]="cargando()">
+              {{ cargando() ? 'CREANDO CUENTA...' : 'REGISTRARME COMO COMPRADOR' }}
+            </button>
+          </form>
+        }
+      }
+    </div>
+  </div>
+</div>
