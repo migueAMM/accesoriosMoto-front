@@ -1,15 +1,21 @@
-<div class="site-wrapper">
-  <!-- Top Mini Bar -->
+<div class="site-wrapper" (mouseleave)="cerrarMenu()">
+  <!-- Barra Superior (Inducascos Top Mini Bar) -->
   <aside class="top-bar">
     <div class="top-bar-inner">
       <div class="top-bar-promo">
-        <span>ENVIO GRATIS POR COMPRAS SUPERIORES A $200.000 COP</span>
+        <span>ENVÍO GRATIS POR COMPRAS SUPERIORES A $200.000 COP</span>
       </div>
       <div class="top-bar-links">
-        <a href="#guia">Guía de tallas</a>
-        <span class="bar-separator">•</span>
-        <a href="#devoluciones">Cambios y Devoluciones</a>
-        <span class="bar-separator">•</span>
+        <a href="#blog">Blog</a>
+        <span class="bar-separator">|</span>
+        <a href="#tallas">Guía de tallas</a>
+        <span class="bar-separator">|</span>
+        <a href="#tiendas">Inducascos Store</a>
+        <span class="bar-separator">|</span>
+        <a href="#b2b">Tienda B2B</a>
+        <span class="bar-separator">|</span>
+        <a href="#cambios">Cambios y devoluciones</a>
+        <span class="bar-separator">|</span>
         <a href="#rastreo">Rastrea tu pedido</a>
       </div>
     </div>
@@ -18,11 +24,12 @@
   <!-- Navbar Principal Sticky -->
   <header class="main-header">
     <div class="header-inner">
-      <!-- Logo Biker Racing -->
-      <a routerLink="/" class="biker-brand">
+      <!-- Logo Biker Racing Estilo Inducascos -->
+      <a routerLink="/" (click)="cerrarMenu()" class="biker-brand">
         <svg class="brand-slash" viewBox="0 0 40 40" fill="none">
           <path d="M12 4L4 36H14L22 4H12Z" fill="#E31837" />
-          <path d="M24 4L16 36H26L34 4H24Z" fill="#ffffff" />
+          <path d="M24 4L16 36H16L24 4Z" fill="#ffffff" />
+          <path d="M26 4L18 36H28L36 4H26Z" fill="#ffffff" />
         </svg>
         <div class="brand-text">
           <span class="brand-title">ACCESORIOS<span class="highlight">MOTO</span></span>
@@ -30,19 +37,124 @@
         </div>
       </a>
 
-      <!-- Menú con todas las pestañas activas -->
+      <!-- Menú de Navegación con Mega Menú desplegable -->
       <nav class="main-nav">
-        <a routerLink="/inicio" routerLinkActive="nav-active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">INICIO</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }" class="nav-item">CASCOS</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }" class="nav-item">TEXTIL</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'accesorios' }" class="nav-item">ACCESORIOS</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'repuestos' }" class="nav-item">REPUESTOS</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ nuevo: 'true' }" class="nav-item nav-badge-new">LO NUEVO</a>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ outlet: 'true' }" class="nav-item nav-badge-outlet">OUTLET</a>
+        <a
+          routerLink="/inicio"
+          routerLinkActive="nav-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (mouseenter)="cerrarMenu()"
+          class="nav-item"
+        >
+          INICIO
+        </a>
+
+        <!-- CASCOS con Mega Menú -->
+        <div class="nav-dropdown-wrapper" (mouseenter)="abrirMenu('CASCOS')">
+          <button
+            type="button"
+            class="nav-item nav-dropdown-btn"
+            [class.nav-active]="menuAbierto() === 'CASCOS'"
+            (click)="navegarACatalogo({ categoria: 'cascos' })"
+          >
+            <span>CASCOS</span>
+            <svg class="chevron-svg" [class.rotated]="menuAbierto() === 'CASCOS'" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- TEXTIL con Mega Menú (Idéntico a captura inducascos) -->
+        <div class="nav-dropdown-wrapper" (mouseenter)="abrirMenu('TEXTIL')">
+          <button
+            type="button"
+            class="nav-item nav-dropdown-btn"
+            [class.nav-active]="menuAbierto() === 'TEXTIL'"
+            (click)="navegarACatalogo({ categoria: 'textil' })"
+          >
+            <span>TEXTIL</span>
+            <svg class="chevron-svg" [class.rotated]="menuAbierto() === 'TEXTIL'" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- ACCESORIOS con Mega Menú -->
+        <div class="nav-dropdown-wrapper" (mouseenter)="abrirMenu('ACCESORIOS')">
+          <button
+            type="button"
+            class="nav-item nav-dropdown-btn"
+            [class.nav-active]="menuAbierto() === 'ACCESORIOS'"
+            (click)="navegarACatalogo({ categoria: 'accesorios' })"
+          >
+            <span>ACCESORIOS</span>
+            <svg class="chevron-svg" [class.rotated]="menuAbierto() === 'ACCESORIOS'" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- REPUESTOS con Mega Menú -->
+        <div class="nav-dropdown-wrapper" (mouseenter)="abrirMenu('REPUESTOS')">
+          <button
+            type="button"
+            class="nav-item nav-dropdown-btn"
+            [class.nav-active]="menuAbierto() === 'REPUESTOS'"
+            (click)="navegarACatalogo({ categoria: 'repuestos' })"
+          >
+            <span>REPUESTOS</span>
+            <svg class="chevron-svg" [class.rotated]="menuAbierto() === 'REPUESTOS'" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <a
+          [routerLink]="['/catalogo']"
+          [queryParams]="{ nuevo: 'true' }"
+          (mouseenter)="cerrarMenu()"
+          class="nav-item nav-badge-new"
+        >
+          LO NUEVO
+        </a>
+
+        <!-- Botón OUTLET con fondo fucsia/rojo idéntico a inducascos -->
+        <a
+          [routerLink]="['/catalogo']"
+          [queryParams]="{ outlet: 'true' }"
+          (mouseenter)="cerrarMenu()"
+          class="nav-item nav-badge-outlet"
+        >
+          OUTLET
+        </a>
       </nav>
 
-      <!-- Iconos de Acción Rápidos -->
+      <!-- Barra de Búsqueda Desplegable / Acciones de Usuario -->
       <div class="header-actions">
+        <!-- Buscador integrado en Navbar -->
+        <div class="header-search-box" [class.search-open]="buscadorVisible()">
+          <input
+            type="text"
+            [(ngModel)]="busquedaHeader"
+            (keyup.enter)="buscar()"
+            placeholder="Buscar cascos, marcas, chaquetas..."
+            class="header-search-input"
+          />
+          <button (click)="buscar()" class="header-search-submit" title="Buscar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
+
+        <button (click)="toggleBuscador()" class="action-icon-btn btn-search-toggle" title="Buscar en catálogo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
         @if (authService.estaAutenticado()) {
           <div class="user-profile-menu">
             <span class="user-greeting">
@@ -66,38 +178,303 @@
           </a>
         }
 
-        <a routerLink="/catalogo" class="action-icon-btn" title="Favoritos">
+        <a [routerLink]="['/catalogo']" class="action-icon-btn" title="Favoritos">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
         </a>
 
-        <a routerLink="/catalogo" class="action-icon-btn cart-btn" title="Carrito">
+        <a [routerLink]="['/catalogo']" class="action-icon-btn cart-btn" title="Carrito">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
-          <span class="cart-count">0</span>
+          <span class="cart-count">9</span>
         </a>
       </div>
     </div>
+
+    <!-- MEGA MENÚ DESPLEGABLE (IDÉNTICO A CAPTURA INDUCASCOS) -->
+    @if (menuAbierto() !== null) {
+      <div class="mega-menu-overlay" (mouseenter)="abrirMenu(menuAbierto()!)" (mouseleave)="cerrarMenu()">
+        <div class="mega-menu-container">
+          <!-- CASO 1: TEXTIL -->
+          @if (menuAbierto() === 'TEXTIL') {
+            <div class="mega-menu-grid">
+              <!-- Columna 1: Subcategorías con Iconos Lineales -->
+              <div class="mega-col mega-categories">
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'chaqueta' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10a2 2 0 002 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"></path>
+                  </svg>
+                  <span>CHAQUETAS PARA MOTO</span>
+                </button>
+
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'guante' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v3"></path>
+                    <path d="M14 9V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"></path>
+                    <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+                    <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>
+                  </svg>
+                  <span>GUANTES PARA MOTO</span>
+                </button>
+
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'impermeable' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17 14v6m-5-6v6m-5-6v6"></path>
+                    <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                  </svg>
+                  <span>IMPERMEABLES PARA MOTO</span>
+                </button>
+
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'pantalon' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M6 3h12l1 18-5-1-2-9-2 9-5 1 1-18z"></path>
+                  </svg>
+                  <span>PANTALONES PARA MOTO</span>
+                </button>
+
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'rodillera' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="6" y="4" width="12" height="16" rx="3"></rect>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>RODILLERAS PARA MOTO</span>
+                </button>
+
+                <button (click)="navegarACatalogo({ categoria: 'textil', q: 'bota' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M7 2v10l-4 4v4h16v-6l-5-2V2H7z"></path>
+                  </svg>
+                  <span>BOTAS PARA MOTO</span>
+                </button>
+              </div>
+
+              <!-- Columna 2: Marcas Destacadas -->
+              <div class="mega-col mega-brands">
+                <span class="mega-col-title">MARCAS DESTACADAS</span>
+                <div class="mega-brands-list">
+                  <button (click)="navegarACatalogo({ categoria: 'textil', marca: 'Alpinestars' })">ALPINESTARS</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', marca: 'Dainese' })">DAINESE</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', marca: 'Rainwear' })">RAINWEAR</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'SHAFT' })">SHAFT PRO</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'HRO' })">HRO</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'LS2' })">LS2 TEXTILE</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'BULLET' })">BULLET</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'ICH' })">ICH</button>
+                  <button (click)="navegarACatalogo({ categoria: 'textil', q: 'ATOMIC' })">ATOMIC</button>
+                </div>
+              </div>
+
+              <!-- Columna 3: Mini Banners con botón VER OFERTA -->
+              <div class="mega-col mega-promos">
+                <div class="mega-promo-card">
+                  <img src="/productos/banner-rider-jacket.jpg" alt="Chaqueta Alpinestars" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'textil', marca: 'Alpinestars' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+
+                <div class="mega-promo-card">
+                  <img src="/productos/banner-rider-gloves.jpg" alt="Guantes Dainese" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'textil', marca: 'Dainese' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- CASO 2: CASCOS -->
+          @if (menuAbierto() === 'CASCOS') {
+            <div class="mega-menu-grid">
+              <div class="mega-col mega-categories">
+                <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'integral' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M7 10h10a3 3 0 0 1-3 4H8"></path>
+                  </svg>
+                  <span>CASCOS INTEGRALES (RACING)</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'modular' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M6 12h12"></path>
+                  </svg>
+                  <span>CASCOS ABATIBLES / MODULARES</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'abierto' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 14a8 8 0 1 1 16 0"></path>
+                    <path d="M7 11h10"></path>
+                  </svg>
+                  <span>CASCOS ABIERTOS / JET</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'cross' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M2 7l10-3 10 3"></path>
+                  </svg>
+                  <span>CASCOS CROSS & ENDURO</span>
+                </button>
+              </div>
+
+              <div class="mega-col mega-brands">
+                <span class="mega-col-title">MARCAS OFICIALES</span>
+                <div class="mega-brands-list">
+                  <button (click)="navegarACatalogo({ categoria: 'cascos', marca: 'AGV' })">AGV RACING</button>
+                  <button (click)="navegarACatalogo({ categoria: 'cascos', marca: 'LS2' })">LS2 HELMETS</button>
+                  <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'SHAFT' })">SHAFT PRO</button>
+                  <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'HRO' })">HRO HELMETS</button>
+                  <button (click)="navegarACatalogo({ categoria: 'cascos', q: 'BELL' })">BELL</button>
+                </div>
+              </div>
+
+              <div class="mega-col mega-promos">
+                <div class="mega-promo-card">
+                  <img src="/productos/casco-agv-k3-negro.jpg" alt="AGV K3 Negro" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'cascos', marca: 'AGV' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+
+                <div class="mega-promo-card">
+                  <img src="/productos/casco-ls2-blanco.jpg" alt="LS2 Blanco" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'cascos', marca: 'LS2' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- CASO 3: ACCESORIOS -->
+          @if (menuAbierto() === 'ACCESORIOS') {
+            <div class="mega-menu-grid">
+              <div class="mega-col mega-categories">
+                <button (click)="navegarACatalogo({ categoria: 'accesorios', q: 'intercom' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                  </svg>
+                  <span>INTERCOMUNICADORES MESH & BT</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'accesorios', q: 'soporte' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                    <line x1="12" y1="18" x2="12" y2="18.01"></line>
+                  </svg>
+                  <span>SOPORTES DE CELULAR ANTIVIBRACIÓN</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'accesorios', q: 'baul' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span>BAÚLES & MALETAS MONOKEY</span>
+                </button>
+              </div>
+
+              <div class="mega-col mega-brands">
+                <span class="mega-col-title">MARCAS LÍDERES</span>
+                <div class="mega-brands-list">
+                  <button (click)="navegarACatalogo({ categoria: 'accesorios', marca: 'Cardo' })">CARDO SYSTEMS</button>
+                  <button (click)="navegarACatalogo({ categoria: 'accesorios', marca: 'Quad Lock' })">QUAD LOCK</button>
+                  <button (click)="navegarACatalogo({ categoria: 'accesorios', marca: 'Givi' })">GIVI ITALY</button>
+                </div>
+              </div>
+
+              <div class="mega-col mega-promos">
+                <div class="mega-promo-card">
+                  <img src="/productos/intercomunicador-cardo-gris.jpg" alt="Cardo" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'accesorios', marca: 'Cardo' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+
+                <div class="mega-promo-card">
+                  <img src="/productos/soporte-quadlock-negro.jpg" alt="Quad Lock" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'accesorios', marca: 'Quad Lock' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- CASO 4: REPUESTOS -->
+          @if (menuAbierto() === 'REPUESTOS') {
+            <div class="mega-menu-grid">
+              <div class="mega-col mega-categories">
+                <button (click)="navegarACatalogo({ categoria: 'repuestos', q: 'visor' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>VISORES TRANSPARENTES Y HUMO</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'repuestos', q: 'iridium' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                  <span>VISORES IRIDIUM CHAMELEON</span>
+                </button>
+                <button (click)="navegarACatalogo({ categoria: 'repuestos', q: 'pinlock' })" class="mega-link-item">
+                  <svg class="mega-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                  </svg>
+                  <span>LÁMINAS ANTIVAHO PINLOCK</span>
+                </button>
+              </div>
+
+              <div class="mega-col mega-brands">
+                <span class="mega-col-title">COMPATIBILIDAD</span>
+                <div class="mega-brands-list">
+                  <button (click)="navegarACatalogo({ categoria: 'repuestos', marca: 'AGV' })">AGV K3 / K1 / K5</button>
+                  <button (click)="navegarACatalogo({ categoria: 'repuestos', q: 'LS2' })">LS2 STREAM / FF353</button>
+                  <button (click)="navegarACatalogo({ categoria: 'repuestos', q: 'SHAFT' })">SHAFT SH-582</button>
+                </div>
+              </div>
+
+              <div class="mega-col mega-promos">
+                <div class="mega-promo-card">
+                  <img src="/productos/visor-agv-transparente.jpg" alt="Visor AGV" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'repuestos', marca: 'AGV' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+
+                <div class="mega-promo-card">
+                  <img src="/productos/banner-visor-colecciones.jpg" alt="Visor Iridium" class="mega-promo-img" />
+                  <div class="mega-promo-content">
+                    <button (click)="navegarACatalogo({ categoria: 'repuestos' })" class="btn-mega-offer">VER OFERTA</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
   </header>
 
   <main class="content-view">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Footer E-commerce -->
+  <!-- Footer E-commerce Profesional -->
   <footer class="main-footer">
     <div class="footer-top">
       <div class="footer-col">
         <h4 class="footer-title">SOBRE ACCESORIOS MOTO</h4>
-        <p class="footer-desc">Distribuidor oficial de cascos certificados, indumentaria con protecciones homologadas y repuestos originales.</p>
+        <p class="footer-desc">Tienda especializada en cascos certificados con homologación racing ECE 22.06, equipamiento con protecciones CE nivel 2 y repuestos originales.</p>
         <div class="payment-methods">
           <span class="pay-pill">VISA</span>
           <span class="pay-pill">MASTERCARD</span>
           <span class="pay-pill">PSE</span>
+          <span class="pay-pill">ADDI</span>
           <span class="pay-pill">EFECTY</span>
         </div>
       </div>
@@ -105,10 +482,11 @@
       <div class="footer-col">
         <h4 class="footer-title">CATEGORÍAS</h4>
         <ul class="footer-links">
-          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }">Cascos Integrales</a></li>
-          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }">Chaquetas Racing</a></li>
-          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }">Guantes con Protecciones</a></li>
+          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }">Cascos Homologados</a></li>
+          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }">Chaquetas & Guantes</a></li>
           <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'accesorios' }">Intercomunicadores Mesh</a></li>
+          <li><a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'repuestos' }">Visores & Pinlock</a></li>
+          <li><a [routerLink]="['/catalogo']" [queryParams]="{ outlet: 'true' }">Outlet Motero</a></li>
         </ul>
       </div>
 
@@ -118,12 +496,13 @@
           <li><a href="#devoluciones">Políticas de Garantía</a></li>
           <li><a href="#tallas">Tabla de Medidas</a></li>
           <li><a href="#contacto">Contacto & Soporte</a></li>
+          <li><a href="#rastreo">Rastrea tu pedido</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4 class="footer-title">NEWSLETTER RACING</h4>
-        <p class="footer-desc">Recibe promociones y lanzamientos exclusivos.</p>
+        <p class="footer-desc">Suscríbete y recibe ofertas de temporada y lanzamientos exclusivos.</p>
         <div class="newsletter-form">
           <input type="email" placeholder="Ingresa tu correo" class="newsletter-input" />
           <button class="newsletter-btn">SUSCRIBIRME</button>
@@ -131,7 +510,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 AccesoriosMoto. Arquitectura Hexagonal + Spring Boot + H2.</p>
+      <p>&copy; 2026 AccesoriosMoto. Arquitectura Hexagonal Spring Boot + Base de Datos H2. Cero emojis.</p>
     </div>
   </footer>
 </div>

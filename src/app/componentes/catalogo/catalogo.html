@@ -213,7 +213,13 @@
                   @if (prod.estadoPublicacion !== 'PUBLICADO') {
                     <span class="floating-badge badge-draft">BORRADOR</span>
                   }
-                  <img [src]="obtenerImagen(prod)" [alt]="prod.tipo" class="card-img" loading="lazy" />
+                  <img
+                    [src]="obtenerImagen(prod)"
+                    [alt]="prod.tipo"
+                    (error)="onImgError($event, prod)"
+                    class="card-img"
+                    loading="lazy"
+                  />
 
                   <!-- Botón Deslizable Hover -->
                   <div class="quick-hover-bar">

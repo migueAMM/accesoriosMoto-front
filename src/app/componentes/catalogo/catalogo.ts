@@ -21,18 +21,19 @@ export class Catalogo implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  // Lista de productos
   productos = signal<ProductoResponse[]>([]);
   cargando = signal<boolean>(false);
   mensaje = signal<string | null>(null);
   error = signal<string | null>(null);
 
-  // Categoría activa desde las pestañas
+  // Categoría seleccionada
   categoriaActiva = signal<string>('TODOS');
 
   // Paginación
   pagina = signal<number>(0);
   tamano = signal<number>(12);
-  totalPaginas = signal<number>(0);
+  totalPaginas = signal<number>(1);
   totalElementos = signal<number>(0);
 
   // Filtros
@@ -49,19 +50,28 @@ export class Catalogo implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if (params['tipo']) {
-        this.busquedaTexto = params['tipo'];
-        this.categoriaActiva.set(params['tipo'].toUpperCase());
-      } else if (params['categoria']) {
+      if (params['categoria']) {
         const cat = params['categoria'].toUpperCase();
         this.categoriaActiva.set(cat);
-        this.aplicarFiltroPorCategoria(cat, false);
+      } else if (params['tipo']) {
+        const t = params['tipo'].toUpperCase();
+        this.categoriaActiva.set(t.includes('CASCO') ? 'CASCOS' : t);
       } else if (params['outlet']) {
         this.categoriaActiva.set('OUTLET');
-        this.precioMax = 300000;
       } else {
         this.categoriaActiva.set('TODOS');
       }
+
+      if (params['q']) {
+        this.busquedaTexto = params['q'];
+      }
+      if (params['marca']) {
+        this.filtroMarca = params['marca'];
+      }
+      if (params['color']) {
+        this.filtroColor = params['color'];
+      }
+
       this.cargarProductos(0);
     });
   }
@@ -69,32 +79,13 @@ export class Catalogo implements OnInit {
   cambiarCategoria(categoria: string): void {
     this.categoriaActiva.set(categoria);
     this.limpiarFiltrosInternos();
-    this.aplicarFiltroPorCategoria(categoria, true);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: categoria === 'TODOS' ? {} : { categoria: categoria.toLowerCase() },
+    });
+
     this.cargarProductos(0);
-  }
-
-  private aplicarFiltroPorCategoria(cat: string, actualizarUrl: boolean): void {
-    if (cat === 'CASCOS') {
-      this.busquedaTexto = 'Casco';
-    } else if (cat === 'TEXTIL') {
-      this.busquedaTexto = '';
-      // Filtrará productos que sean chaqueta, guantes o impermeable
-    } else if (cat === 'ACCESORIOS') {
-      this.busquedaTexto = '';
-    } else if (cat === 'REPUESTOS') {
-      this.busquedaTexto = 'Visor';
-    } else if (cat === 'OUTLET') {
-      this.precioMax = 300000;
-    } else {
-      this.busquedaTexto = '';
-    }
-
-    if (actualizarUrl) {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: cat === 'TODOS' ? {} : { categoria: cat.toLowerCase() },
-      });
-    }
   }
 
   cargarProductos(numPagina: number = 0): void {
@@ -102,77 +93,75 @@ export class Catalogo implements OnInit {
     this.error.set(null);
     this.pagina.set(numPagina);
 
-    if (this.busquedaTexto.trim()) {
-      this.catalogoService
-        .buscarPorTexto({
-          texto: this.busquedaTexto.trim(),
-          precioMinimo: this.precioMin ?? undefined,
-          precioMaximo: this.precioMax ?? undefined,
-          pagina: numPagina,
-          tamano: this.tamano(),
-        })
-        .subscribe({
-          next: (resp) => {
-            let items = resp.content;
-            items = this.filtrarPorCategoriaLocal(items);
-            this.productos.set(items);
-            this.totalPaginas.set(resp.totalPages);
-            this.totalElementos.set(resp.totalElements);
-            this.cargando.set(false);
-          },
-          error: (err) => {
-            this.error.set('No se pudo cargar el catálogo: ' + (err.error?.message || err.message));
-            this.cargando.set(false);
-          },
-        });
-    } else {
-      this.catalogoService
-        .listar({
-          marca: this.filtroMarca.trim() || undefined,
-          color: this.filtroColor.trim() || undefined,
-          precioMinimo: this.precioMin ?? undefined,
-          precioMaximo: this.precioMax ?? undefined,
-          tipoCompatibilidad: this.compatibilidadTipo || undefined,
-          modeloCompatibilidad: this.compatibilidadModelo.trim() || undefined,
-          pagina: numPagina,
-          tamano: this.tamano(),
-        })
-        .subscribe({
-          next: (resp) => {
-            let items = resp.content;
-            items = this.filtrarPorCategoriaLocal(items);
-            this.productos.set(items);
-            this.totalPaginas.set(resp.totalPages);
-            this.totalElementos.set(resp.totalElements);
-            this.cargando.set(false);
-          },
-          error: (err) => {
-            this.error.set('No se pudo cargar el catálogo: ' + (err.error?.message || err.message));
-            this.cargando.set(false);
-          },
-        });
-    }
+    // Llamamos siempre a listar enviando moneda 'COP' si hay filtros de precio para cumplir con la regla del backend
+    this.catalogoService
+      .listar({
+        marca: this.filtroMarca.trim() || undefined,
+        color: this.filtroColor.trim() || undefined,
+        precioMinimo: this.precioMin ?? undefined,
+        precioMaximo: this.precioMax ?? undefined,
+        moneda: this.precioMin != null || this.precioMax != null ? 'COP' : undefined,
+        tipoCompatibilidad: this.compatibilidadTipo || undefined,
+        modeloCompatibilidad: this.compatibilidadModelo.trim() || undefined,
+        pagina: numPagina,
+        tamano: this.tamano(),
+      })
+      .subscribe({
+        next: (resp) => {
+          let items = resp.content;
+
+          // 1. Filtrar según la pestaña activa (CASCOS, TEXTIL, ACCESORIOS, REPUESTOS, OUTLET)
+          items = this.filtrarPorCategoria(items);
+
+          // 2. Búsqueda local por texto en marca, tipo, color o ID
+          if (this.busquedaTexto.trim()) {
+            const query = this.busquedaTexto.trim().toLowerCase();
+            items = items.filter(
+              (p) =>
+                (p.marca && p.marca.toLowerCase().includes(query)) ||
+                (p.tipo && p.tipo.toLowerCase().includes(query)) ||
+                (p.color && p.color.toLowerCase().includes(query)) ||
+                (p.id && p.id.toLowerCase().includes(query))
+            );
+          }
+
+          this.productos.set(items);
+          this.totalElementos.set(items.length);
+          this.totalPaginas.set(Math.max(1, Math.ceil(items.length / this.tamano())));
+          this.cargando.set(false);
+        },
+        error: (err) => {
+          this.error.set('No se pudo cargar el catálogo: ' + (err.error?.mensaje || err.message));
+          this.cargando.set(false);
+        },
+      });
   }
 
-  private filtrarPorCategoriaLocal(items: ProductoResponse[]): ProductoResponse[] {
+  private filtrarPorCategoria(items: ProductoResponse[]): ProductoResponse[] {
     const cat = this.categoriaActiva();
+    if (cat === 'CASCOS') {
+      return items.filter((p) => p.tipo?.toLowerCase().includes('casco'));
+    }
     if (cat === 'TEXTIL') {
       return items.filter((p) => {
-        const t = p.tipo.toLowerCase();
+        const t = p.tipo?.toLowerCase() || '';
         return t.includes('chaqueta') || t.includes('guante') || t.includes('impermeable');
       });
     }
     if (cat === 'ACCESORIOS') {
       return items.filter((p) => {
-        const t = p.tipo.toLowerCase();
-        return t.includes('intercom') || t.includes('soporte') || t.includes('baul');
+        const t = p.tipo?.toLowerCase() || '';
+        return t.includes('baul') || t.includes('soporte') || t.includes('intercom');
       });
     }
-    if (cat === 'CASCOS') {
-      return items.filter((p) => p.tipo.toLowerCase().includes('casco'));
-    }
     if (cat === 'REPUESTOS') {
-      return items.filter((p) => p.tipo.toLowerCase().includes('visor') || p.tipo.toLowerCase().includes('soporte'));
+      return items.filter((p) => {
+        const t = p.tipo?.toLowerCase() || '';
+        return t.includes('visor');
+      });
+    }
+    if (cat === 'OUTLET') {
+      return items.filter((p) => p.precioMonto <= 300000);
     }
     return items;
   }
@@ -270,35 +259,55 @@ export class Catalogo implements OnInit {
     });
   }
 
+  /**
+   * Ruta absoluta con "/" al inicio para que el navegador cargue desde la raíz del dominio
+   */
   obtenerImagen(prod: ProductoResponse): string {
-    const tipo = prod.tipo?.toLowerCase() || '';
+    const id = prod.id || '';
+    const tipo = (prod.tipo || '').toLowerCase();
+    const color = (prod.color || '').toLowerCase();
+
+    // Mapeo por ID de los registros reales de la base de datos
+    if (id === 'seed-casco-1') return '/productos/casco-agv-k3-negro.jpg';
+    if (id === 'seed-casco-2') return '/productos/casco-ls2-blanco.jpg';
+    if (id === 'seed-chaqueta-1') return '/productos/chaqueta-alpinestars-cuero.jpg';
+    if (id === 'seed-guantes-1') return '/productos/guantes-dainese-negro.jpg';
+    if (id === 'seed-impermeable-1') return '/productos/impermeable-rainwear-azul.jpg';
+    if (id === 'seed-intercom-1') return '/productos/intercomunicador-cardo-gris.jpg';
+    if (id === 'seed-soporte-1') return '/productos/soporte-quadlock-negro.jpg';
+    if (id === 'seed-baul-1') return '/productos/baul-givi-negro.jpg';
+    if (id === 'seed-visor-1') return '/productos/visor-agv-transparente.jpg';
+
+    // Mapeo genérico con ruta absoluta
     if (tipo.includes('casco')) {
-      return prod.color?.toLowerCase().includes('blanco')
-        ? 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=600&q=80'
-        : 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80';
+      return color.includes('blanco')
+        ? '/productos/casco-ls2-blanco.jpg'
+        : '/productos/casco-agv-k3-negro.jpg';
     }
-    if (tipo.includes('chaqueta')) {
-      return 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80';
+    if (tipo.includes('chaqueta')) return '/productos/chaqueta-alpinestars-cuero.jpg';
+    if (tipo.includes('guante')) return '/productos/guantes-dainese-negro.jpg';
+    if (tipo.includes('impermeable')) return '/productos/impermeable-rainwear-azul.jpg';
+    if (tipo.includes('intercom')) return '/productos/intercomunicador-cardo-gris.jpg';
+    if (tipo.includes('soporte')) return '/productos/soporte-quadlock-negro.jpg';
+    if (tipo.includes('baul')) return '/productos/baul-givi-negro.jpg';
+    if (tipo.includes('visor')) return '/productos/visor-agv-transparente.jpg';
+
+    return '/productos/casco-agv-k3-negro.jpg';
+  }
+
+  onImgError(event: Event, prod: ProductoResponse): void {
+    const target = event.target as HTMLImageElement;
+    if (!target) return;
+    const tipo = (prod.tipo || '').toLowerCase();
+    if (tipo.includes('casco')) {
+      target.src = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=85';
+    } else if (tipo.includes('chaqueta')) {
+      target.src = 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=85';
+    } else if (tipo.includes('guante')) {
+      target.src = 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=800&q=85';
+    } else {
+      target.src = 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=85';
     }
-    if (tipo.includes('guantes')) {
-      return 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=600&q=80';
-    }
-    if (tipo.includes('impermeable')) {
-      return 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=600&q=80';
-    }
-    if (tipo.includes('intercomunicador')) {
-      return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
-    }
-    if (tipo.includes('soporte')) {
-      return 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80';
-    }
-    if (tipo.includes('baul')) {
-      return 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80';
-    }
-    if (tipo.includes('visor')) {
-      return 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80';
-    }
-    return 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=80';
   }
 
   obtenerBadge(prod: ProductoResponse): string {
@@ -306,6 +315,6 @@ export class Catalogo implements OnInit {
     if (t.includes('casco')) return 'ECE 22.06';
     if (t.includes('chaqueta')) return 'NIVEL 3';
     if (prod.precioMonto > 500000) return 'PREMIUM';
-    return 'NUEVO';
+    return 'ORIGINAL';
   }
 }

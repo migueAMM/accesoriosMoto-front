@@ -1,91 +1,109 @@
 <div class="home-wrapper">
-  <!-- MOSAICO PROMOCIONAL ESTILO INDUCASCOS -->
+  <!-- MOSAICO PROMOCIONAL ESTILO INDUCASCOS (BANNER COLLAGE) -->
   <section class="promo-mosaic-section">
     <div class="mosaic-grid">
-      <!-- Casco Hero Grande -->
+      <!-- Casco Hero Principal (Izquierda Grande) -->
       <div class="mosaic-card card-hero-helmet">
         <div class="mosaic-overlay"></div>
         <img
-          src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1000&q=80"
-          alt="Casco Racing"
+          src="/productos/casco-agv-k3-negro.jpg"
+          alt="Cascos Homologación Racing AGV"
           class="mosaic-bg-img"
         />
         <div class="mosaic-content">
-          <span class="mosaic-badge">COLECCIÓN 2026</span>
+          <span class="mosaic-badge">COLECCIÓN RACING 2026</span>
           <h2 class="mosaic-title">CASCOS CON HOMOLOGACIÓN RACING</h2>
-          <p class="mosaic-subtitle">Tecnología de absorción de impacto y visores preparados para Pinlock.</p>
-          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }" class="btn-mosaic-action">VER MÁS →</a>
+          <p class="mosaic-subtitle">Cascos de máxima seguridad certificados ECE 22.06 con visores antiempañante Pinlock Ready.</p>
+          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }" class="btn-mosaic-action">VER MÁS &rarr;</a>
         </div>
       </div>
 
-      <!-- Chaquetas -->
+      <!-- Chaquetas Racing (Centro Superior) -->
       <div class="mosaic-card card-jacket">
         <div class="mosaic-overlay"></div>
         <img
-          src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80"
-          alt="Chaquetas Racing"
+          src="/productos/banner-rider-jacket.jpg"
+          alt="Chaquetas Racing Alpinestars"
           class="mosaic-bg-img"
         />
         <div class="mosaic-content">
-          <span class="mosaic-tag">PROTECCIÓN CE</span>
-          <h3 class="mosaic-title-sm">CHAQUETAS RACING</h3>
+          <span class="mosaic-tag">PROTECCIÓN CE NIVEL 2</span>
+          <h3 class="mosaic-title-sm">CHAQUETAS RACING & TOURING</h3>
           <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }" class="btn-mosaic-outline">VER MÁS</a>
         </div>
       </div>
 
-      <!-- Combos Especiales -->
+      <!-- Combo Impermeable (Centro Inferior - Bloque Naranja) -->
       <div class="mosaic-card card-combo">
+        <div class="combo-image-wrap">
+          <img
+            src="/productos/banner-combo-impermeable.jpg"
+            alt="Combo Impermeable Moto"
+            class="combo-img"
+          />
+        </div>
         <div class="mosaic-content-combo">
           <span class="combo-badge">ARMA TU COMBO</span>
           <h3 class="combo-title">IMPERMEABLE + CASCO + GUANTES</h3>
           <p class="combo-price">DESDE $300.000 COP</p>
-          <a [routerLink]="['/catalogo']" [queryParams]="{ outlet: 'true' }" class="btn-mosaic-action btn-sm">VER MÁS →</a>
+          <a [routerLink]="['/catalogo']" [queryParams]="{ outlet: 'true' }" class="btn-mosaic-action btn-sm">VER MÁS &rarr;</a>
         </div>
       </div>
 
-      <!-- Oferta Flash -->
+      <!-- Intercomunicadores (Derecha Superior - Bloque Azul) -->
       <div class="mosaic-card card-flash">
+        <div class="flash-image-wrap">
+          <img
+            src="/productos/intercomunicador-cardo-gris.jpg"
+            alt="Intercomunicador Cardo Packtalk"
+            class="flash-img"
+          />
+        </div>
         <div class="mosaic-content-center">
-          <span class="flash-tag">OFERTA TEMPORADA</span>
+          <span class="flash-tag">COMUNICACIÓN MESH</span>
           <h3 class="flash-title">INTERCOMUNICADORES</h3>
-          <p class="flash-desc">Hasta 1.200m de alcance con tecnología Mesh.</p>
+          <p class="flash-desc">Hasta 1.200m de alcance y audio JBL.</p>
           <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'accesorios' }" class="btn-mosaic-white">¡LO QUIERO!</a>
         </div>
       </div>
 
-      <!-- Visores Iridio -->
+      <!-- Visores Iridium & Colecciones (Derecha Inferior - Bloque Morado) -->
       <div class="mosaic-card card-visors">
         <div class="mosaic-overlay"></div>
         <img
-          src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80"
-          alt="Visores Iridio"
+          src="/productos/banner-visor-colecciones.jpg"
+          alt="Visores Iridium Colecciones"
           class="mosaic-bg-img"
         />
         <div class="mosaic-content">
-          <span class="mosaic-tag">LO ÚLTIMO</span>
-          <h3 class="mosaic-title-sm">VISORES IRIDIO & POLARIZADOS</h3>
+          <span class="mosaic-tag">LO ÚLTIMO EN COLECCIONES</span>
+          <h3 class="mosaic-title-sm">VISORES IRIDIUM CHAMELEON</h3>
           <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'repuestos' }" class="btn-mosaic-outline">VER MÁS</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CÍRCULOS DE CATEGORÍAS (COMPRA POR TIPO DE CASCO) -->
+  <!-- CÍRCULOS DE CATEGORÍAS: COMPRA POR TIPO DE CASCO (IDÉNTICO A INDUCASCOS) -->
   <section class="helmet-types-section">
     <div class="section-container">
       <div class="types-header">
         <h2 class="section-heading">COMPRA POR TIPO DE CASCO</h2>
         <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }" class="help-link">
-          <span class="help-icon">i</span> Guía para escoger tu talla
+          <span class="help-badge">?</span>
+          <span>Ayuda para escoger</span>
         </a>
       </div>
 
       <div class="types-carousel-row">
-        @for (item of tiposCasco; track item.nombre) {
-          <a [routerLink]="['/catalogo']" [queryParams]="{ tipo: item.nombre }" class="type-circle-card">
+        @for (item of tiposCasco; track item.id) {
+          <a [routerLink]="['/catalogo']" [queryParams]="item.queryParams" class="type-circle-card">
             <div class="circle-outer">
               <div class="circle-inner">
-                <img [src]="item.icono" [alt]="item.nombre" class="type-img" />
+                <svg viewBox="0 0 100 100" class="helmet-svg" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path [attr.d]="item.svgPath" />
+                  <circle cx="50" cy="50" r="1.5" fill="#111111" />
+                </svg>
               </div>
             </div>
             <h4 class="type-name">{{ item.nombre }}</h4>
@@ -96,7 +114,7 @@
     </div>
   </section>
 
-  <!-- BARRA DE MARCAS RACING -->
+  <!-- BARRA DE MARCAS OFICIALES -->
   <section class="brands-strip-section">
     <div class="section-container">
       <div class="brands-track">
@@ -112,10 +130,10 @@
     <div class="section-container">
       <div class="featured-header">
         <div>
-          <span class="section-eyebrow">EN STOCK</span>
+          <span class="section-eyebrow">EN STOCK CON ENTREGA INMEDIATA</span>
           <h2 class="section-heading">PRODUCTOS DESTACADOS</h2>
         </div>
-        <a routerLink="/catalogo" class="btn-view-all">VER CATÁLOGO COMPLETO →</a>
+        <a routerLink="/catalogo" class="btn-view-all">VER CATÁLOGO COMPLETO &rarr;</a>
       </div>
 
       @if (!cargando()) {
@@ -133,7 +151,7 @@
                   <span class="item-price">{{ prod.precioMonto | currency: prod.precioMoneda:'symbol':'1.0-0' }}</span>
                   <span class="item-curr">{{ prod.precioMoneda }}</span>
                 </div>
-                <a [routerLink]="['/catalogo']" [queryParams]="{ tipo: prod.tipo }" class="btn-card-act">Comprar en Tienda</a>
+                <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: prod.tipo.toLowerCase().includes('casco') ? 'cascos' : 'textil' }" class="btn-card-act">Ver en Tienda</a>
               </div>
             </article>
           }

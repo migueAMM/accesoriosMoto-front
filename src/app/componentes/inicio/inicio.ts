@@ -5,6 +5,14 @@ import { CatalogoService } from '../../servicios/catalogo';
 import { AuthService } from '../../servicios/auth';
 import { ProductoResponse } from '../../modelos/catalogo';
 
+export interface TipoCascoItem {
+  id: string;
+  nombre: string;
+  tag: string;
+  svgPath: string;
+  queryParams: Record<string, string>;
+}
+
 @Component({
   selector: 'app-inicio',
   standalone: true,
@@ -19,19 +27,57 @@ export class Inicio implements OnInit {
   destacados = signal<ProductoResponse[]>([]);
   cargando = signal<boolean>(false);
 
-  // Categorías de compra rápida tipo Inducascos
-  tiposCasco = [
-    { nombre: 'INTEGRAL', icono: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=300&q=80', tag: 'Máxima Seguridad' },
-    { nombre: 'MODULAR', icono: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=300&q=80', tag: 'Touring & Ciudad' },
-    { nombre: 'ABIERTO', icono: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=300&q=80', tag: 'Clásico & Urbano' },
-    { nombre: 'OFF-ROAD', icono: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=300&q=80', tag: 'Enduro & Cross' },
-    { nombre: 'DUAL SPORT', icono: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=300&q=80', tag: 'Aventura Total' },
+  // Tipos de casco reales basados en la silueta de inducascos.com
+  tiposCasco: TipoCascoItem[] = [
+    {
+      id: 'integral',
+      nombre: 'INTEGRAL',
+      tag: 'Pista & Racing',
+      svgPath: 'M 18,52 C 14,36 22,14 48,10 C 74,6 88,24 88,44 C 88,58 84,68 76,78 C 66,88 48,90 34,88 C 22,86 16,74 18,52 Z M 32,32 L 80,34 C 82,46 78,54 62,55 L 34,55 C 28,52 28,40 32,32 Z',
+      queryParams: { categoria: 'cascos' },
+    },
+    {
+      id: 'abatible',
+      nombre: 'ABATIBLE',
+      tag: 'Modular Touring',
+      svgPath: 'M 18,50 C 14,34 22,14 48,10 C 74,6 88,22 88,44 C 88,60 82,72 74,80 C 64,88 46,90 34,88 C 22,86 16,72 18,50 Z M 30,30 L 78,32 C 80,44 76,50 64,52 L 32,52 Z M 26,62 L 58,62 C 60,68 58,74 50,76 L 28,74 Z',
+      queryParams: { categoria: 'cascos' },
+    },
+    {
+      id: 'abierto',
+      nombre: 'ABIERTO',
+      tag: 'Jet Urbano',
+      svgPath: 'M 22,46 C 18,32 26,14 50,10 C 74,6 86,22 86,42 C 86,56 80,66 74,72 C 64,80 52,82 46,82 C 40,82 34,70 34,60 M 34,28 L 80,30 C 82,48 76,64 64,68 L 38,62',
+      queryParams: { categoria: 'cascos' },
+    },
+    {
+      id: 'multiproposito',
+      nombre: 'MULTIPROPÓSITO',
+      tag: 'Dual Adventure',
+      svgPath: 'M 16,48 C 12,34 22,16 46,12 C 70,8 86,24 86,44 C 86,60 80,72 72,80 C 60,88 44,88 32,86 Z M 8,16 L 54,8 L 62,14 L 18,22 Z M 32,34 L 80,36 C 82,48 76,54 62,56 L 34,56 Z',
+      queryParams: { categoria: 'cascos' },
+    },
+    {
+      id: 'cross',
+      nombre: 'CROSS',
+      tag: 'Enduro & Off-Road',
+      svgPath: 'M 14,50 C 10,36 20,18 44,14 C 68,10 84,26 84,46 C 84,62 76,74 68,82 C 54,92 36,92 24,88 Z M 4,12 L 58,6 L 66,12 L 14,20 Z M 26,60 L 12,68 L 22,76 L 38,70 Z',
+      queryParams: { categoria: 'cascos' },
+    },
+    {
+      id: 'retro',
+      nombre: 'RETRO',
+      tag: 'Cafe Racer & Custom',
+      svgPath: 'M 20,48 C 16,34 24,14 50,10 C 76,6 88,24 88,46 C 88,62 82,74 74,82 C 62,90 46,90 32,88 C 22,86 18,70 20,48 Z M 32,32 L 80,34 C 82,44 78,50 66,52 L 34,52 Z',
+      queryParams: { categoria: 'cascos' },
+    },
   ];
 
-  marcas = ['AGV', 'LS2', 'ALPINESTARS', 'DAINESE', 'GIVI', 'CARDO', 'QUAD LOCK'];
+  marcas = ['AGV', 'LS2', 'ALPINESTARS', 'DAINESE', 'GIVI', 'CARDO', 'QUAD LOCK', 'SHAFT', 'HRO'];
 
   ngOnInit(): void {
     this.cargando.set(true);
+    // Cargamos productos de la BD
     this.catalogoService.listar({ pagina: 0, tamano: 4 }).subscribe({
       next: (resp) => {
         this.destacados.set(resp.content);
@@ -42,15 +88,33 @@ export class Inicio implements OnInit {
   }
 
   obtenerImagen(prod: ProductoResponse): string {
-    const tipo = prod.tipo?.toLowerCase() || '';
+    const id = prod.id || '';
+    const tipo = (prod.tipo || '').toLowerCase();
+    const color = (prod.color || '').toLowerCase();
+
+    if (id === 'seed-casco-1') return '/productos/casco-agv-k3-negro.jpg';
+    if (id === 'seed-casco-2') return '/productos/casco-ls2-blanco.jpg';
+    if (id === 'seed-chaqueta-1') return '/productos/chaqueta-alpinestars-cuero.jpg';
+    if (id === 'seed-guantes-1') return '/productos/guantes-dainese-negro.jpg';
+    if (id === 'seed-impermeable-1') return '/productos/impermeable-rainwear-azul.jpg';
+    if (id === 'seed-intercom-1') return '/productos/intercomunicador-cardo-gris.jpg';
+    if (id === 'seed-soporte-1') return '/productos/soporte-quadlock-negro.jpg';
+    if (id === 'seed-baul-1') return '/productos/baul-givi-negro.jpg';
+    if (id === 'seed-visor-1') return '/productos/visor-agv-transparente.jpg';
+
     if (tipo.includes('casco')) {
-      return prod.color?.toLowerCase().includes('blanco')
-        ? 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=600&q=80'
-        : 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80';
+      return color.includes('blanco')
+        ? '/productos/casco-ls2-blanco.jpg'
+        : '/productos/casco-agv-k3-negro.jpg';
     }
-    if (tipo.includes('chaqueta')) return 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80';
-    if (tipo.includes('guantes')) return 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=600&q=80';
-    if (tipo.includes('baul')) return 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80';
-    return 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=80';
+    if (tipo.includes('chaqueta')) return '/productos/chaqueta-alpinestars-cuero.jpg';
+    if (tipo.includes('guante')) return '/productos/guantes-dainese-negro.jpg';
+    if (tipo.includes('impermeable')) return '/productos/impermeable-rainwear-azul.jpg';
+    if (tipo.includes('intercom')) return '/productos/intercomunicador-cardo-gris.jpg';
+    if (tipo.includes('soporte')) return '/productos/soporte-quadlock-negro.jpg';
+    if (tipo.includes('baul')) return '/productos/baul-givi-negro.jpg';
+    if (tipo.includes('visor')) return '/productos/visor-agv-transparente.jpg';
+
+    return '/productos/casco-agv-k3-negro.jpg';
   }
 }

@@ -22,11 +22,17 @@ export class CatalogoService {
 
     if (filtro.marca) params = params.set('marca', filtro.marca);
     if (filtro.color) params = params.set('color', filtro.color);
-    if (filtro.precioMinimo !== undefined && filtro.precioMinimo !== null)
+
+    // Si se especifica precio mínimo o máximo, el backend en H2/Spring Boot exige obligatoriamente moneda
+    if (filtro.precioMinimo !== undefined && filtro.precioMinimo !== null) {
       params = params.set('precioMinimo', filtro.precioMinimo.toString());
-    if (filtro.precioMaximo !== undefined && filtro.precioMaximo !== null)
+      params = params.set('moneda', filtro.moneda || 'COP');
+    }
+    if (filtro.precioMaximo !== undefined && filtro.precioMaximo !== null) {
       params = params.set('precioMaximo', filtro.precioMaximo.toString());
-    if (filtro.moneda) params = params.set('moneda', filtro.moneda);
+      params = params.set('moneda', filtro.moneda || 'COP');
+    }
+
     if (filtro.tipoCompatibilidad)
       params = params.set('tipoCompatibilidad', filtro.tipoCompatibilidad);
     if (filtro.modeloCompatibilidad)
@@ -43,11 +49,17 @@ export class CatalogoService {
     let params = new HttpParams();
 
     if (paramsFiltro.texto) params = params.set('texto', paramsFiltro.texto);
-    if (paramsFiltro.precioMinimo !== undefined && paramsFiltro.precioMinimo !== null)
+
+    // El backend en H2/Spring Boot exige obligatoriamente moneda si se filtra por precio
+    if (paramsFiltro.precioMinimo !== undefined && paramsFiltro.precioMinimo !== null) {
       params = params.set('precioMinimo', paramsFiltro.precioMinimo.toString());
-    if (paramsFiltro.precioMaximo !== undefined && paramsFiltro.precioMaximo !== null)
+      params = params.set('moneda', paramsFiltro.moneda || 'COP');
+    }
+    if (paramsFiltro.precioMaximo !== undefined && paramsFiltro.precioMaximo !== null) {
       params = params.set('precioMaximo', paramsFiltro.precioMaximo.toString());
-    if (paramsFiltro.moneda) params = params.set('moneda', paramsFiltro.moneda);
+      params = params.set('moneda', paramsFiltro.moneda || 'COP');
+    }
+
     if (paramsFiltro.ordenarPor) params = params.set('ordenarPor', paramsFiltro.ordenarPor);
     if (paramsFiltro.direccion) params = params.set('direccion', paramsFiltro.direccion);
     if (paramsFiltro.pagina !== undefined && paramsFiltro.pagina !== null)
