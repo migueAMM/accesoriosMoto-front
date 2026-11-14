@@ -65,6 +65,15 @@
   </section>
 
   <!-- Notificaciones -->
+  @if (wishlistService.notificacion()) {
+    <div class="toast-alert toast-info">
+      <svg class="toast-svg" viewBox="0 0 24 24" fill="#e31837" stroke="#e31837" stroke-width="1">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span>{{ wishlistService.notificacion() }}</span>
+      <button (click)="wishlistService.notificacion.set(null)" class="toast-close">Cerrar</button>
+    </div>
+  }
   @if (mensaje()) {
     <div class="toast-alert toast-success">
       <svg class="toast-svg" viewBox="0 0 20 20" fill="currentColor">
@@ -225,6 +234,18 @@
                   @if (prod.estadoPublicacion !== 'PUBLICADO') {
                     <span class="floating-badge badge-draft">BORRADOR</span>
                   }
+                  <!-- Botón Wishlist / Favoritos Flotante -->
+                  <button
+                    type="button"
+                    class="btn-wishlist-card"
+                    [class.in-wishlist]="wishlistService.estaEnWishlist(prod.id)"
+                    (click)="toggleWishlist(prod, $event)"
+                    [title]="wishlistService.estaEnWishlist(prod.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : 'none'" [attr.stroke]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : '#111111'" stroke-width="2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  </button>
                   <img
                     [src]="obtenerImagen(prod)"
                     [alt]="prod.tipo"
@@ -312,7 +333,7 @@
           <div class="form-row">
             <div class="form-field">
               <label class="field-label">TIPO DE PRODUCTO</label>
-              <select [(ngModel)]="nuevoProducto.tipo" name="tipo" class="form-select">
+              <select [(ngModel)]="nuevoProducto.tipo" name="tipo" (change)="onTipoProductoChange()" class="form-select">
                 <option value="Casco">Casco</option>
                 <option value="Chaqueta">Chaqueta</option>
                 <option value="Guantes">Guantes</option>
@@ -347,21 +368,29 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MODELO</label>
-                <input type="text" [(ngModel)]="nuevoProducto.modelo" name="modelo" class="form-input" />
+                <input type="text" [(ngModel)]="nuevoProducto.modelo" name="modelo" class="form-input" placeholder="Ej. K3 SV Racing" required />
               </div>
               <div class="form-field">
                 <label class="field-label">TALLA</label>
-                <input type="text" [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input" placeholder="S, M, L, XL" />
+                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                  @for (t of tallasDisponibles; track t) {
+                    <option [value]="t">Talla {{ t }}</option>
+                  }
+                </select>
               </div>
             </div>
             <div class="form-row">
               <div class="form-field">
-                <label class="field-label">PROTECCIÓN</label>
-                <input type="text" [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input" />
+                <label class="field-label">NIVEL DE PROTECCIÓN</label>
+                <select [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input">
+                  @for (np of nivelesProteccion; track np.valor) {
+                    <option [value]="np.valor">{{ np.label }}</option>
+                  }
+                </select>
               </div>
               <div class="form-field">
                 <label class="field-label">CERTIFICACIÓN</label>
-                <input type="text" [(ngModel)]="nuevoProducto.certificacionSeguridad" name="certificacionSeguridad" class="form-input" placeholder="ECE 22.06, DOT" />
+                <input type="text" [(ngModel)]="nuevoProducto.certificacionSeguridad" name="certificacionSeguridad" class="form-input" placeholder="ECE 22.06 / DOT" required />
               </div>
             </div>
           }
@@ -371,16 +400,50 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MATERIAL</label>
-                <input type="text" [(ngModel)]="nuevoProducto.material" name="material" class="form-input" />
+                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                  @for (m of materiales; track m.valor) {
+                    <option [value]="m.valor">{{ m.label }}</option>
+                  }
+                </select>
               </div>
               <div class="form-field">
                 <label class="field-label">TALLA</label>
-                <input type="text" [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input" />
+                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                  @for (t of tallasDisponibles; track t) {
+                    <option [value]="t">Talla {{ t }}</option>
+                  }
+                </select>
               </div>
             </div>
             <div class="form-field">
               <label class="field-label">NIVEL DE PROTECCIÓN</label>
-              <input type="text" [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input" placeholder="Protecciones CE Nivel 2" />
+              <select [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input">
+                @for (np of nivelesProteccion; track np.valor) {
+                  <option [value]="np.valor">{{ np.label }}</option>
+                }
+              </select>
+            </div>
+          }
+
+          <!-- Campos para Impermeable -->
+          @if (nuevoProducto.tipo === 'Impermeable') {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">MATERIAL</label>
+                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                  @for (m of materiales; track m.valor) {
+                    <option [value]="m.valor">{{ m.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="field-label">TALLA</label>
+                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                  @for (t of tallasDisponibles; track t) {
+                    <option [value]="t">Talla {{ t }}</option>
+                  }
+                </select>
+              </div>
             </div>
           }
 
@@ -388,17 +451,27 @@
           @if (nuevoProducto.tipo === 'Baul') {
             <div class="form-row">
               <div class="form-field">
-                <label class="field-label">CAPACIDAD (LITROS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.capacidadLitros" name="capacidadLitros" class="form-input" />
+                <label class="field-label">MATERIAL</label>
+                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                  @for (m of materiales; track m.valor) {
+                    <option [value]="m.valor">{{ m.label }}</option>
+                  }
+                </select>
               </div>
               <div class="form-field">
-                <label class="field-label">CARGA MÁXIMA (KG)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.capacidadMaximaCarga" name="capacidadMaximaCarga" class="form-input" />
+                <label class="field-label">CAPACIDAD (LITROS)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.capacidadLitros" name="capacidadLitros" class="form-input" min="1" />
               </div>
             </div>
-            <div class="form-field">
-              <label class="field-label">DIMENSIONES</label>
-              <input type="text" [(ngModel)]="nuevoProducto.dimensiones" name="dimensiones" class="form-input" placeholder="45x40x32 cm" />
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label">CARGA MÁXIMA (KG)</label>
+                <input type="number" [(ngModel)]="nuevoProducto.capacidadMaximaCarga" name="capacidadMaximaCarga" class="form-input" min="1" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">DIMENSIONES</label>
+                <input type="text" [(ngModel)]="nuevoProducto.dimensiones" name="dimensiones" class="form-input" placeholder="45x40x32 cm" />
+              </div>
             </div>
           }
 
@@ -407,16 +480,19 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">ALCANCE (METROS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.alcanceMetros" name="alcanceMetros" class="form-input" />
+                <input type="number" [(ngModel)]="nuevoProducto.alcanceMetros" name="alcanceMetros" class="form-input" min="10" />
               </div>
               <div class="form-field">
                 <label class="field-label">AUTONOMÍA (HORAS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.autonomiaHoras" name="autonomiaHoras" class="form-input" />
+                <input type="number" [(ngModel)]="nuevoProducto.autonomiaHoras" name="autonomiaHoras" class="form-input" min="1" />
               </div>
             </div>
             <div class="form-field">
               <label class="field-label">TECNOLOGÍA BLUETOOTH</label>
-              <input type="text" [(ngModel)]="nuevoProducto.bluetooth" name="bluetooth" class="form-input" placeholder="Bluetooth 5.2 Dynamic Mesh" />
+              <select [(ngModel)]="nuevoProducto.bluetooth" name="bluetooth" class="form-input">
+                <option [ngValue]="true">Sí (Bluetooth Integrado)</option>
+                <option [ngValue]="false">No (Solo conexión cable / análoga)</option>
+              </select>
             </div>
           }
 
@@ -435,6 +511,102 @@
               <input type="text" [(ngModel)]="nuevoProducto.tipoVisor" name="tipoVisor" class="form-input" placeholder="Transparente, Humo oscuro, Iridium Azul" />
             </div>
           }
+
+          <!-- SECCIÓN: FOTOGRAFÍA DEL PRODUCTO -->
+          <div class="image-upload-section">
+            <div class="image-section-header">
+              <label class="field-label">FOTOGRAFÍA DEL PRODUCTO</label>
+              <div class="image-mode-tabs">
+                <button
+                  type="button"
+                  class="btn-mode-tab"
+                  [class.active]="nuevoProducto.modoImagen === 'preset'"
+                  (click)="nuevoProducto.modoImagen = 'preset'"
+                >
+                  Galería Oficial
+                </button>
+                <button
+                  type="button"
+                  class="btn-mode-tab"
+                  [class.active]="nuevoProducto.modoImagen === 'descargados'"
+                  (click)="nuevoProducto.modoImagen = 'descargados'"
+                >
+                  Foto desde Descargas
+                </button>
+              </div>
+            </div>
+
+            <!-- Opción 1: Galería oficial de estudio -->
+            @if (nuevoProducto.modoImagen === 'preset') {
+              <div class="presets-gallery-grid">
+                @for (preset of imagenesService.presets; track preset.url) {
+                  <button
+                    type="button"
+                    class="preset-thumb-btn"
+                    [class.selected]="nuevoProducto.imagenUrl === preset.url"
+                    (click)="seleccionarPreset(preset.url)"
+                    [title]="preset.nombre"
+                  >
+                    <img [src]="preset.url" [alt]="preset.nombre" class="preset-thumb-img" />
+                    <span class="preset-thumb-label">{{ preset.nombre }}</span>
+                  </button>
+                }
+              </div>
+            }
+
+            <!-- Opción 2: Foto cargada desde Descargas mediante ruta estática rápida -->
+            @if (nuevoProducto.modoImagen === 'descargados') {
+              <div class="downloads-photo-container">
+                <div class="download-featured-card">
+                  <div class="download-featured-info">
+                    <span class="download-tag">DESCARGADO EN TU EQUIPO</span>
+                    <strong class="download-title">Casco Scorpion EXO Negro Mate</strong>
+                    <span class="download-path">Ruta directa: /productos/casco-scorpion-exo.jpg</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-select-download"
+                    [class.active]="nuevoProducto.imagenUrl === '/productos/casco-scorpion-exo.jpg'"
+                    (click)="seleccionarPreset('/productos/casco-scorpion-exo.jpg')"
+                  >
+                    {{ nuevoProducto.imagenUrl === '/productos/casco-scorpion-exo.jpg' ? 'Seleccionado' : 'Usar esta foto' }}
+                  </button>
+                </div>
+
+                <div class="file-upload-box">
+                  <input
+                    type="file"
+                    id="productFileInput"
+                    accept="image/png, image/jpeg, image/webp"
+                    (change)="onArchivoSeleccionado($event)"
+                    class="file-input-hidden"
+                  />
+                  <label for="productFileInput" class="file-drop-zone">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <span class="file-drop-text">O selecciona otro archivo desde tu carpeta Descargas</span>
+                    <span class="file-drop-hint">Carga optimizada instantánea (0ms de latencia)</span>
+                  </label>
+                </div>
+              </div>
+            }
+
+            <!-- Vista previa en tiempo real -->
+            <div class="image-preview-card">
+              <span class="preview-badge">Vista previa en tienda:</span>
+              <div class="preview-box">
+                <img
+                  [src]="nuevoProducto.previewImagen || nuevoProducto.imagenUrl"
+                  alt="Vista previa"
+                  class="preview-img"
+                  (error)="nuevoProducto.previewImagen = '/productos/casco-scorpion-exo.jpg'"
+                />
+              </div>
+            </div>
+          </div>
 
           <div class="modal-footer">
             <button type="button" (click)="cerrarModalCrear()" class="btn-cancel">Cancelar</button>

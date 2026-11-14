@@ -90,18 +90,36 @@ export class Login {
       })
       .subscribe({
         next: (usuario) => {
-          this.cargando.set(false);
           this.mensaje.set(
-            `¡Usuario ${usuario.nombre} registrado con éxito! Ahora puedes iniciar sesión.`
+            `¡Usuario "${usuario.nombre}" registrado con éxito! Iniciando sesión automáticamente...`
           );
-          this.loginCorreo = this.registroCorreo;
-          this.loginClave = this.registroClave;
-          this.esModoRegistro.set(false);
+          // Inicio de sesión automático y persistencia inmediata en localStorage
+          this.authService
+            .login({
+              correo: this.registroCorreo,
+              contrasena: this.registroClave,
+            })
+            .subscribe({
+              next: () => {
+                this.cargando.set(false);
+                setTimeout(() => {
+                  this.router.navigate(['/catalogo']);
+                }, 1000);
+              },
+              error: () => {
+                this.cargando.set(false);
+                this.loginCorreo = this.registroCorreo;
+                this.loginClave = this.registroClave;
+                this.esModoRegistro.set(false);
+              },
+            });
         },
         error: (err) => {
           this.cargando.set(false);
           this.error.set(
-            err.error?.message || 'Error al registrar el comprador en el sistema.'
+            err.error?.mensaje ||
+              err.error?.message ||
+              'Error al registrar el comprador. Verifica que el correo no esté ya registrado.'
           );
         },
       });

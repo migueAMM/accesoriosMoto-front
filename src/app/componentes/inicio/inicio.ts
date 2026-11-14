@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CatalogoService } from '../../servicios/catalogo';
 import { AuthService } from '../../servicios/auth';
+import { WishlistService } from '../../servicios/wishlist';
+import { CarritoService } from '../../servicios/carrito';
+import { ImagenesProductoService } from '../../servicios/imagenes-producto';
 import { ProductoResponse } from '../../modelos/catalogo';
 
 export interface TipoCascoItem {
@@ -23,6 +26,9 @@ export interface TipoCascoItem {
 export class Inicio implements OnInit {
   private catalogoService = inject(CatalogoService);
   public authService = inject(AuthService);
+  public wishlistService = inject(WishlistService);
+  public carritoService = inject(CarritoService);
+  public imagenesService = inject(ImagenesProductoService);
 
   destacados = signal<ProductoResponse[]>([]);
   cargando = signal<boolean>(false);
@@ -87,34 +93,23 @@ export class Inicio implements OnInit {
     });
   }
 
-  obtenerImagen(prod: ProductoResponse): string {
-    const id = prod.id || '';
-    const tipo = (prod.tipo || '').toLowerCase();
-    const color = (prod.color || '').toLowerCase();
-
-    if (id === 'seed-casco-1') return '/productos/casco-agv-k3-negro.jpg';
-    if (id === 'seed-casco-2') return '/productos/casco-ls2-blanco.jpg';
-    if (id === 'seed-chaqueta-1') return '/productos/chaqueta-alpinestars-cuero.jpg';
-    if (id === 'seed-guantes-1') return '/productos/guantes-dainese-negro.jpg';
-    if (id === 'seed-impermeable-1') return '/productos/impermeable-rainwear-azul.jpg';
-    if (id === 'seed-intercom-1') return '/productos/intercomunicador-cardo-gris.jpg';
-    if (id === 'seed-soporte-1') return '/productos/soporte-quadlock-negro.jpg';
-    if (id === 'seed-baul-1') return '/productos/baul-givi-negro.jpg';
-    if (id === 'seed-visor-1') return '/productos/visor-agv-transparente.jpg';
-
-    if (tipo.includes('casco')) {
-      return color.includes('blanco')
-        ? '/productos/casco-ls2-blanco.jpg'
-        : '/productos/casco-agv-k3-negro.jpg';
+  toggleWishlist(prod: ProductoResponse, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
     }
-    if (tipo.includes('chaqueta')) return '/productos/chaqueta-alpinestars-cuero.jpg';
-    if (tipo.includes('guante')) return '/productos/guantes-dainese-negro.jpg';
-    if (tipo.includes('impermeable')) return '/productos/impermeable-rainwear-azul.jpg';
-    if (tipo.includes('intercom')) return '/productos/intercomunicador-cardo-gris.jpg';
-    if (tipo.includes('soporte')) return '/productos/soporte-quadlock-negro.jpg';
-    if (tipo.includes('baul')) return '/productos/baul-givi-negro.jpg';
-    if (tipo.includes('visor')) return '/productos/visor-agv-transparente.jpg';
+    this.wishlistService.toggle(prod);
+  }
 
-    return '/productos/casco-agv-k3-negro.jpg';
+  obtenerImagen(prod: ProductoResponse): string {
+    return this.imagenesService.obtenerImagen(prod);
+  }
+
+  agregarAlCarrito(prod: ProductoResponse, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this.carritoService.agregar(prod, 1);
   }
 }

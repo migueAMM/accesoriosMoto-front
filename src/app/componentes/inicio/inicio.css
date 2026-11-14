@@ -9,7 +9,7 @@
   padding: 0 1.5rem;
 }
 
-/* --- MOSAICO PROMOCIONAL (IDÉNTICO A INDUCASCOS) --- */
+/* --- MOSAICO PROMOCIONAL (INDU CASCOS STYLE) --- */
 .promo-mosaic-section {
   max-width: 1400px;
   margin: 1.5rem auto 3rem;
@@ -29,19 +29,18 @@
   overflow: hidden;
   background-color: #111827;
   display: flex;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-smooth);
 }
 
 .mosaic-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(1.01);
 }
 
 .mosaic-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 100%);
   z-index: 1;
 }
 
@@ -51,11 +50,11 @@
   object-fit: cover;
   position: absolute;
   inset: 0;
-  transition: transform 0.5s ease;
+  transition: transform var(--transition-smooth);
 }
 
 .mosaic-card:hover .mosaic-bg-img {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .mosaic-content {
@@ -68,13 +67,13 @@
   color: #ffffff;
 }
 
-/* Tarjeta Hero Casco Izquierda */
+/* Tarjeta Hero (Ocupa 2 filas) */
 .card-hero-helmet {
   grid-row: span 2;
 }
 
 .card-hero-helmet .mosaic-overlay {
-  background: linear-gradient(to right, rgba(10, 10, 12, 0.92) 0%, rgba(227, 24, 55, 0.25) 70%, transparent 100%);
+  background: linear-gradient(to right, rgba(17, 17, 17, 0.95) 0%, rgba(227, 24, 55, 0.4) 100%);
 }
 
 .mosaic-badge {
@@ -84,7 +83,7 @@
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.1em;
-  padding: 0.25rem 0.65rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 3px;
   margin-bottom: 0.75rem;
   width: fit-content;
@@ -103,7 +102,6 @@
   color: #d1d5db;
   margin-bottom: 1.5rem;
   max-width: 440px;
-  line-height: 1.4;
 }
 
 .btn-mosaic-action {
@@ -115,16 +113,14 @@
   font-size: 0.85rem;
   font-weight: 900;
   letter-spacing: 0.05em;
-  padding: 0.8rem 1.6rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 4px;
   width: fit-content;
-  text-decoration: none;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color var(--transition-fast);
 }
 
 .btn-mosaic-action:hover {
   background-color: #b8122c;
-  transform: translateY(-1px);
 }
 
 /* Tarjetas secundarias */
@@ -132,7 +128,7 @@
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: #d1d5db;
+  color: #9ca3af;
   margin-bottom: 0.25rem;
 }
 
@@ -145,16 +141,15 @@
 
 .btn-mosaic-outline {
   display: inline-block;
-  border: 1.5px solid #ffffff;
+  border: 1px solid #ffffff;
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  padding: 0.45rem 1.1rem;
+  padding: 0.45rem 1rem;
   border-radius: 3px;
   width: fit-content;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .btn-mosaic-outline:hover {
@@ -162,42 +157,20 @@
   color: #111827;
 }
 
-/* Tarjeta Combo Naranja */
+/* Tarjeta Combo */
 .card-combo {
-  background: linear-gradient(135deg, #d9531e 0%, #b83808 100%);
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
   display: flex;
   align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.combo-image-wrap {
-  position: absolute;
-  right: -10px;
-  bottom: -15px;
-  width: 170px;
-  height: 170px;
-  opacity: 0.95;
-  pointer-events: none;
-}
-
-.combo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
 }
 
 .mosaic-content-combo {
-  position: relative;
-  z-index: 2;
   padding: 1.5rem;
   color: #ffffff;
-  max-width: 65%;
 }
 
 .combo-badge {
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: rgba(0, 0, 0, 0.3);
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -211,11 +184,10 @@
   font-size: 1.15rem;
   font-weight: 900;
   margin-bottom: 0.35rem;
-  line-height: 1.2;
 }
 
 .combo-price {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 900;
   color: #fef08a;
   margin-bottom: 0.75rem;
@@ -228,52 +200,28 @@
 
 /* Tarjeta Flash Azul */
 .card-flash {
-  background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 100%);
   display: flex;
   align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.flash-image-wrap {
-  position: absolute;
-  right: -10px;
-  bottom: -10px;
-  width: 150px;
-  height: 150px;
-  opacity: 0.9;
-  pointer-events: none;
-}
-
-.flash-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
 }
 
 .mosaic-content-center {
-  position: relative;
-  z-index: 2;
   padding: 1.5rem;
   color: #ffffff;
-  max-width: 65%;
 }
 
 .flash-tag {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: #93c5fd;
   display: block;
   margin-bottom: 0.35rem;
-  letter-spacing: 0.08em;
 }
 
 .flash-title {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 900;
   margin-bottom: 0.35rem;
-  line-height: 1.2;
 }
 
 .flash-desc {
@@ -284,31 +232,20 @@
 
 .btn-mosaic-white {
   background-color: #ffffff;
-  color: #0d47a1;
+  color: #1d4ed8;
   font-size: 0.75rem;
   font-weight: 900;
   padding: 0.5rem 1.25rem;
   border-radius: 3px;
   display: inline-block;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .btn-mosaic-white:hover {
   background-color: #f1f5f9;
-  transform: translateY(-1px);
 }
 
-/* Tarjeta Visores Morado */
-.card-visors {
-  background: linear-gradient(135deg, #2e0854 0%, #18032b 100%);
-}
-
-.card-visors .mosaic-overlay {
-  background: linear-gradient(135deg, rgba(30, 4, 55, 0.85) 0%, rgba(30, 4, 55, 0.3) 100%);
-}
-
-/* --- SECCIÓN CÍRCULOS: COMPRA POR TIPO DE CASCO --- */
+/* --- SECCIÓN CÍRCULOS DE CASCOS (TIPO INDUCASCOS) --- */
 .helmet-types-section {
   background-color: #ffffff;
   padding: 3.5rem 0;
@@ -333,21 +270,15 @@
 .help-link {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #111827;
+  color: #e31837;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  gap: 0.4rem;
 }
 
-.help-link:hover {
-  color: #e31837;
-}
-
-.help-badge {
-  width: 20px;
-  height: 20px;
+.help-icon {
+  width: 18px;
+  height: 18px;
   background-color: #e31837;
   color: #ffffff;
   border-radius: 50%;
@@ -360,7 +291,7 @@
 
 .types-carousel-row {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
 }
 
@@ -369,47 +300,45 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  text-decoration: none;
   cursor: pointer;
+  group: hover;
 }
 
 .circle-outer {
-  width: 130px;
-  height: 130px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background-color: #f1f3f5;
+  background-color: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all var(--transition-smooth);
   border: 2px solid transparent;
 }
 
 .type-circle-card:hover .circle-outer {
   border-color: #e31837;
-  background-color: #ffffff;
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(227, 24, 55, 0.18);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(227, 24, 55, 0.15);
 }
 
 .circle-inner {
-  width: 90px;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
-.helmet-svg {
-  width: 80px;
-  height: 80px;
-  transition: transform 0.3s ease;
+.type-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
 }
 
-.type-circle-card:hover .helmet-svg {
-  transform: scale(1.12);
-  stroke: #e31837;
+.type-circle-card:hover .type-img {
+  transform: scale(1.1);
 }
 
 .type-name {
@@ -420,15 +349,15 @@
 }
 
 .type-tag {
-  font-size: 0.72rem;
-  color: #6b7280;
+  font-size: 0.75rem;
+  color: #9ca3af;
   font-weight: 600;
 }
 
 /* --- BANNER DE MARCAS (STRIP) --- */
 .brands-strip-section {
   background-color: #111827;
-  padding: 1.75rem 0;
+  padding: 1.5rem 0;
 }
 
 .brands-track {
@@ -440,17 +369,15 @@
 }
 
 .brand-item {
-  color: #9ca3af;
+  color: #6b7280;
   font-size: 1.15rem;
   font-weight: 900;
   letter-spacing: 0.12em;
-  transition: color 0.2s ease, transform 0.2s ease;
-  cursor: default;
+  transition: color var(--transition-fast);
 }
 
 .brand-item:hover {
   color: #ffffff;
-  transform: translateY(-2px);
 }
 
 /* --- PRODUCTOS DESTACADOS --- */
@@ -481,8 +408,7 @@
   font-weight: 800;
   color: #111827;
   letter-spacing: 0.05em;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast);
 }
 
 .btn-view-all:hover {
@@ -500,15 +426,15 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-smooth);
   display: flex;
   flex-direction: column;
 }
 
 .featured-item-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
   border-color: #d1d5db;
 }
 
@@ -516,11 +442,7 @@
   position: relative;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  background-color: #f3f4f6;
 }
 
 .item-badge {
@@ -537,10 +459,10 @@
 }
 
 .item-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: transform 0.4s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
 }
 
 .featured-item-card:hover .item-img {
@@ -552,8 +474,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: #fafafa;
-  border-top: 1px solid #f0f0f0;
 }
 
 .item-brand {
@@ -601,12 +521,49 @@
   letter-spacing: 0.05em;
   padding: 0.65rem;
   border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--transition-fast);
 }
 
 .btn-card-act:hover {
   background-color: #e31837;
+}
+
+.btn-wishlist-card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e7eb;
+  color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-wishlist-card:hover {
+  transform: scale(1.15);
+  background-color: #ffffff;
+  color: #e31837;
+  box-shadow: 0 4px 12px rgba(227, 24, 55, 0.25);
+}
+
+.btn-wishlist-card.in-wishlist {
+  background-color: #fff1f2;
+  border-color: #fecdd3;
+  color: #e31837;
+}
+
+.loading-box {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
 }
 
 /* Responsivo */
@@ -618,7 +575,7 @@
   .card-hero-helmet {
     grid-column: span 2;
     grid-row: auto;
-    height: 320px;
+    height: 300px;
   }
   .types-carousel-row {
     grid-template-columns: repeat(3, 1fr);

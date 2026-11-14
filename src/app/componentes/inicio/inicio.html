@@ -142,6 +142,17 @@
             <article class="featured-item-card">
               <div class="item-img-box">
                 <span class="item-badge">{{ prod.tipo }}</span>
+                <button
+                  type="button"
+                  class="btn-wishlist-card"
+                  [class.in-wishlist]="wishlistService.estaEnWishlist(prod.id)"
+                  (click)="toggleWishlist(prod, $event)"
+                  [title]="wishlistService.estaEnWishlist(prod.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : 'none'" [attr.stroke]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : '#111111'" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
                 <img [src]="obtenerImagen(prod)" [alt]="prod.marca" class="item-img" />
               </div>
               <div class="item-info">
@@ -151,7 +162,7 @@
                   <span class="item-price">{{ prod.precioMonto | currency: prod.precioMoneda:'symbol':'1.0-0' }}</span>
                   <span class="item-curr">{{ prod.precioMoneda }}</span>
                 </div>
-                <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: prod.tipo.toLowerCase().includes('casco') ? 'cascos' : 'textil' }" class="btn-card-act">Ver en Tienda</a>
+                <button type="button" (click)="agregarAlCarrito(prod, $event)" class="btn-card-act">Añadir al Carrito</button>
               </div>
             </article>
           }

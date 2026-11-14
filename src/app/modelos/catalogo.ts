@@ -6,6 +6,7 @@ export interface ProductoResponse {
   precioMonto: number;
   precioMoneda: string;
   estadoPublicacion: 'PUBLICADO' | 'BORRADOR' | string;
+  imagenUrl?: string;
 }
 
 export interface ProductoVentasResponse {
