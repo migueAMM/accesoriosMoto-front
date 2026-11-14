@@ -33,93 +33,66 @@
         </div>
       </div>
 
-      <!-- Combo Impermeable (Centro Inferior - Bloque Naranja) -->
-      <div class="mosaic-card card-combo">
-        <div class="combo-image-wrap">
-          <img
-            src="/productos/banner-combo-impermeable.jpg"
-            alt="Combo Impermeable Moto"
-            class="combo-img"
-          />
-        </div>
-        <div class="mosaic-content-combo">
-          <span class="combo-badge">ARMA TU COMBO</span>
-          <h3 class="combo-title">IMPERMEABLE + CASCO + GUANTES</h3>
-          <p class="combo-price">DESDE $300.000 COP</p>
-          <a [routerLink]="['/catalogo']" [queryParams]="{ outlet: 'true' }" class="btn-mosaic-action btn-sm">VER MÁS &rarr;</a>
+      <!-- Guantes & Equipamiento Textil (Centro Inferior) -->
+      <div class="mosaic-card card-gloves">
+        <div class="mosaic-overlay"></div>
+        <img
+          src="/productos/banner-rider-gloves.jpg"
+          alt="Guantes Racing Moto"
+          class="mosaic-bg-img"
+        />
+        <div class="mosaic-content">
+          <span class="mosaic-tag">EQUIPAMIENTO & INDUMENTARIA</span>
+          <h3 class="mosaic-title-sm">GUANTES & EQUIPAMIENTO TEXTIL</h3>
+          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'textil' }" class="btn-mosaic-outline">VER MÁS</a>
         </div>
       </div>
 
-      <!-- Intercomunicadores (Derecha Superior - Bloque Azul) -->
+      <!-- Intercomunicadores & Accesorios (Derecha Superior) -->
       <div class="mosaic-card card-flash">
-        <div class="flash-image-wrap">
-          <img
-            src="/productos/intercomunicador-cardo-gris.jpg"
-            alt="Intercomunicador Cardo Packtalk"
-            class="flash-img"
-          />
-        </div>
-        <div class="mosaic-content-center">
-          <span class="flash-tag">COMUNICACIÓN MESH</span>
-          <h3 class="flash-title">INTERCOMUNICADORES</h3>
-          <p class="flash-desc">Hasta 1.200m de alcance y audio JBL.</p>
-          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'accesorios' }" class="btn-mosaic-white">¡LO QUIERO!</a>
+        <div class="mosaic-overlay"></div>
+        <img
+          src="/productos/intercomunicador-cardo-gris.jpg"
+          alt="Intercomunicadores y Soportes"
+          class="mosaic-bg-img"
+        />
+        <div class="mosaic-content">
+          <span class="mosaic-tag">COMUNICACIÓN MESH & VIAJE</span>
+          <h3 class="mosaic-title-sm">ACCESORIOS & INTERCOMUNICADORES</h3>
+          <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'accesorios' }" class="btn-mosaic-outline">VER MÁS</a>
         </div>
       </div>
 
-      <!-- Visores Iridium & Colecciones (Derecha Inferior - Bloque Morado) -->
+      <!-- Visores y Repuestos (Derecha Inferior) -->
       <div class="mosaic-card card-visors">
         <div class="mosaic-overlay"></div>
         <img
           src="/productos/banner-visor-colecciones.jpg"
-          alt="Visores Iridium Colecciones"
+          alt="Visores y Repuestos Originales"
           class="mosaic-bg-img"
         />
         <div class="mosaic-content">
-          <span class="mosaic-tag">LO ÚLTIMO EN COLECCIONES</span>
-          <h3 class="mosaic-title-sm">VISORES IRIDIUM CHAMELEON</h3>
+          <span class="mosaic-tag">REPUESTOS & MANTENIMIENTO</span>
+          <h3 class="mosaic-title-sm">VISORES Y REPUESTOS</h3>
           <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'repuestos' }" class="btn-mosaic-outline">VER MÁS</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CÍRCULOS DE CATEGORÍAS: COMPRA POR TIPO DE CASCO (IDÉNTICO A INDUCASCOS) -->
-  <section class="helmet-types-section">
-    <div class="section-container">
-      <div class="types-header">
-        <h2 class="section-heading">COMPRA POR TIPO DE CASCO</h2>
-        <a [routerLink]="['/catalogo']" [queryParams]="{ categoria: 'cascos' }" class="help-link">
-          <span class="help-badge">?</span>
-          <span>Ayuda para escoger</span>
-        </a>
-      </div>
-
-      <div class="types-carousel-row">
-        @for (item of tiposCasco; track item.id) {
-          <a [routerLink]="['/catalogo']" [queryParams]="item.queryParams" class="type-circle-card">
-            <div class="circle-outer">
-              <div class="circle-inner">
-                <svg viewBox="0 0 100 100" class="helmet-svg" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path [attr.d]="item.svgPath" />
-                  <circle cx="50" cy="50" r="1.5" fill="#111111" />
-                </svg>
-              </div>
-            </div>
-            <h4 class="type-name">{{ item.nombre }}</h4>
-            <span class="type-tag">{{ item.tag }}</span>
-          </a>
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- BARRA DE MARCAS OFICIALES -->
+  <!-- BARRA DE MARCAS OFICIALES INTERACTIVA -->
   <section class="brands-strip-section">
     <div class="section-container">
       <div class="brands-track">
         @for (b of marcas; track b) {
-          <span class="brand-item">{{ b }}</span>
+          <a
+            [routerLink]="['/catalogo']"
+            [queryParams]="{ marca: b }"
+            class="brand-item brand-link"
+            title="Ver catálogo de {{ b }}"
+          >
+            {{ b }}
+          </a>
         }
       </div>
     </div>

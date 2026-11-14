@@ -245,139 +245,41 @@
   background-color: #f1f5f9;
 }
 
-/* --- SECCIÓN CÍRCULOS DE CASCOS (TIPO INDUCASCOS) --- */
-.helmet-types-section {
-  background-color: #ffffff;
-  padding: 3.5rem 0;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.types-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2.5rem;
-}
-
-.section-heading {
-  font-size: 1.75rem;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  color: #111827;
-}
-
-.help-link {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #e31837;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.help-icon {
-  width: 18px;
-  height: 18px;
-  background-color: #e31837;
-  color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 900;
-}
-
-.types-carousel-row {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1.5rem;
-}
-
-.type-circle-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-  group: hover;
-}
-
-.circle-outer {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background-color: #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  transition: all var(--transition-smooth);
-  border: 2px solid transparent;
-}
-
-.type-circle-card:hover .circle-outer {
-  border-color: #e31837;
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(227, 24, 55, 0.15);
-}
-
-.circle-inner {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.type-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--transition-smooth);
-}
-
-.type-circle-card:hover .type-img {
-  transform: scale(1.1);
-}
-
-.type-name {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 0.2rem;
-}
-
-.type-tag {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  font-weight: 600;
-}
-
 /* --- BANNER DE MARCAS (STRIP) --- */
 .brands-strip-section {
   background-color: #111827;
-  padding: 1.5rem 0;
+  padding: 1.75rem 0;
+  border-top: 1px solid #1f2937;
+  border-bottom: 1px solid #1f2937;
 }
 
 .brands-track {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.75rem 2.25rem;
 }
 
 .brand-item {
-  color: #6b7280;
-  font-size: 1.15rem;
+  color: #9ca3af;
+  font-size: 1rem;
   font-weight: 900;
   letter-spacing: 0.12em;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
 }
 
 .brand-item:hover {
   color: #ffffff;
+  background-color: rgba(227, 24, 55, 0.15);
+  transform: translateY(-2px);
+  text-shadow: 0 0 12px rgba(227, 24, 55, 0.4);
 }
 
 /* --- PRODUCTOS DESTACADOS --- */
@@ -577,9 +479,6 @@
     grid-row: auto;
     height: 300px;
   }
-  .types-carousel-row {
-    grid-template-columns: repeat(3, 1fr);
-  }
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -591,9 +490,6 @@
   }
   .card-hero-helmet {
     grid-column: span 1;
-  }
-  .types-carousel-row {
-    grid-template-columns: repeat(2, 1fr);
   }
   .featured-grid {
     grid-template-columns: 1fr;

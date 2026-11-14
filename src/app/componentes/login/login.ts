@@ -90,8 +90,9 @@ export class Login {
       })
       .subscribe({
         next: (usuario) => {
+          const nombreMostrado = usuario?.nombre || this.registroNombre || 'comprador';
           this.mensaje.set(
-            `¡Usuario "${usuario.nombre}" registrado con éxito! Iniciando sesión automáticamente...`
+            `¡Usuario "${nombreMostrado}" registrado con éxito! Iniciando sesión automáticamente...`
           );
           // Inicio de sesión automático y persistencia inmediata en localStorage
           this.authService

@@ -121,33 +121,163 @@
         </div>
       </div>
 
-      <!-- Marcas -->
+      <!-- Selector Desplegable de Marcas con Scroll Interno -->
       <div class="filter-group">
-        <label class="filter-label">MARCAS</label>
-        <div class="checkbox-list">
-          @for (m of marcasDisponibles; track m) {
-            <label class="custom-checkbox-row">
-              <input type="radio" name="filtroMarca" [checked]="filtroMarca === m" (change)="seleccionarMarca(m)" />
-              <span class="checkbox-box"></span>
-              <span class="checkbox-text">{{ m }}</span>
-            </label>
+        <div class="filter-header-row">
+          <label class="filter-label">MARCA</label>
+          @if (filtroMarca) {
+            <button type="button" class="btn-clear-single" (click)="seleccionarMarca('')" title="Quitar filtro de marca">
+              Limpiar
+            </button>
+          }
+        </div>
+
+        <div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+          <button
+            type="button"
+            class="custom-select-trigger"
+            [class.select-open]="dropdownMarcasAbierto()"
+            [class.has-selection]="!!filtroMarca"
+            (click)="toggleDropdownMarcas($event)"
+          >
+            <span class="trigger-label">
+              {{ filtroMarca ? filtroMarca : 'Todas las marcas' }}
+            </span>
+            <svg
+              class="chevron-svg"
+              [class.chevron-rotate]="dropdownMarcasAbierto()"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          @if (dropdownMarcasAbierto()) {
+            <div class="custom-select-dropdown scrollable-panel">
+              <button
+                type="button"
+                class="dropdown-option-item"
+                [class.option-selected]="!filtroMarca"
+                (click)="seleccionarMarca('')"
+              >
+                <span class="option-name">Todas las marcas</span>
+                @if (!filtroMarca) {
+                  <svg class="check-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </button>
+
+              @for (m of marcasDisponibles; track m) {
+                <button
+                  type="button"
+                  class="dropdown-option-item"
+                  [class.option-selected]="filtroMarca === m"
+                  (click)="seleccionarMarca(m)"
+                >
+                  <span class="option-name">{{ m }}</span>
+                  @if (filtroMarca === m) {
+                    <svg class="check-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  }
+                </button>
+              }
+            </div>
           }
         </div>
       </div>
 
-      <!-- Colores -->
+      <!-- Selector Desplegable de Colores con Scroll Interno -->
       <div class="filter-group">
-        <label class="filter-label">COLOR</label>
-        <div class="color-chips-list">
-          @for (c of coloresDisponibles; track c) {
-            <button
-              type="button"
-              class="color-chip-btn"
-              [class.chip-active]="filtroColor === c"
-              (click)="seleccionarColor(c)"
-            >
-              {{ c }}
+        <div class="filter-header-row">
+          <label class="filter-label">COLOR</label>
+          @if (filtroColor) {
+            <button type="button" class="btn-clear-single" (click)="seleccionarColor('')" title="Quitar filtro de color">
+              Limpiar
             </button>
+          }
+        </div>
+
+        <div class="custom-select-wrapper" (click)="$event.stopPropagation()">
+          <button
+            type="button"
+            class="custom-select-trigger"
+            [class.select-open]="dropdownColoresAbierto()"
+            [class.has-selection]="!!filtroColor"
+            (click)="toggleDropdownColores($event)"
+          >
+            <div class="trigger-content-with-swatch">
+              @if (filtroColor) {
+                <span
+                  class="color-dot-swatch"
+                  [style.background-color]="obtenerMuestraColor(filtroColor)"
+                ></span>
+              }
+              <span class="trigger-label">
+                {{ filtroColor ? filtroColor : 'Todos los colores' }}
+              </span>
+            </div>
+            <svg
+              class="chevron-svg"
+              [class.chevron-rotate]="dropdownColoresAbierto()"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          @if (dropdownColoresAbierto()) {
+            <div class="custom-select-dropdown scrollable-panel">
+              <button
+                type="button"
+                class="dropdown-option-item"
+                [class.option-selected]="!filtroColor"
+                (click)="seleccionarColor('')"
+              >
+                <div class="option-content-row">
+                  <span class="color-dot-swatch swatch-multi"></span>
+                  <span class="option-name">Todos los colores</span>
+                </div>
+                @if (!filtroColor) {
+                  <svg class="check-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </button>
+
+              @for (c of coloresDisponibles; track c) {
+                <button
+                  type="button"
+                  class="dropdown-option-item"
+                  [class.option-selected]="filtroColor === c"
+                  (click)="seleccionarColor(c)"
+                >
+                  <div class="option-content-row">
+                    <span
+                      class="color-dot-swatch"
+                      [style.background-color]="obtenerMuestraColor(c)"
+                    ></span>
+                    <span class="option-name">{{ c }}</span>
+                  </div>
+                  @if (filtroColor === c) {
+                    <svg class="check-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  }
+                </button>
+              }
+            </div>
           }
         </div>
       </div>
@@ -184,11 +314,30 @@
     <!-- CUADRÍCULA DE PRODUCTOS -->
     <main class="catalog-products-area">
       <div class="products-top-bar">
-        <span class="results-counter">
-          Mostrando <strong>{{ productos().length }}</strong> accesorios disponibles
-        </span>
+        <div class="top-bar-info">
+          <span class="results-counter">
+            Mostrando <strong>{{ productos().length }}</strong> de <strong>{{ totalElementos() }}</strong> accesorios
+          </span>
+          <span class="page-indicator-pill">
+            Página {{ pagina() + 1 }} de {{ totalPaginas() }}
+          </span>
+        </div>
 
         <div class="top-bar-admin-actions">
+          <div class="page-size-selector">
+            <label for="pageSizeSelect" class="size-label">Ver:</label>
+            <select
+              id="pageSizeSelect"
+              [ngModel]="tamano()"
+              (ngModelChange)="cambiarTamano($event)"
+              class="page-size-select"
+            >
+              @for (s of tamanosDisponibles; track s) {
+                <option [value]="s">{{ s }} / pág</option>
+              }
+            </select>
+          </div>
+
           @if (authService.esAdmin()) {
             <button (click)="abrirModalCrear()" class="btn-add-product">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -198,8 +347,9 @@
               <span>AGREGAR PRODUCTO</span>
             </button>
           }
+
           <div class="sort-selector-wrapper">
-            <span class="sort-label">Categoría activa:</span>
+            <span class="sort-label">Categoría:</span>
             <span class="active-cat-tag">{{ categoriaActiva() }}</span>
           </div>
         </div>
@@ -227,85 +377,163 @@
           <!-- Grid Responsiva -->
           <div class="products-grid">
             @for (prod of productos(); track prod.id) {
-              <article class="biker-card">
-                <!-- Media & Badges -->
-                <div class="card-media">
-                  <span class="floating-badge badge-tag">{{ obtenerBadge(prod) }}</span>
-                  @if (prod.estadoPublicacion !== 'PUBLICADO') {
-                    <span class="floating-badge badge-draft">BORRADOR</span>
-                  }
-                  <!-- Botón Wishlist / Favoritos Flotante -->
-                  <button
-                    type="button"
-                    class="btn-wishlist-card"
-                    [class.in-wishlist]="wishlistService.estaEnWishlist(prod.id)"
-                    (click)="toggleWishlist(prod, $event)"
-                    [title]="wishlistService.estaEnWishlist(prod.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : 'none'" [attr.stroke]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : '#111111'" stroke-width="2">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                  </button>
-                  <img
-                    [src]="obtenerImagen(prod)"
-                    [alt]="prod.tipo"
-                    (error)="onImgError($event, prod)"
-                    class="card-img"
-                    loading="lazy"
-                  />
+              @if (prod.estadoPublicacion === 'PUBLICADO' || authService.esAdmin()) {
+                <article class="biker-card" [class.product-unlisted]="prod.estadoPublicacion !== 'PUBLICADO'">
+                  <!-- Media & Badges -->
+                  <div class="card-media">
+                    @if (prod.estadoPublicacion === 'PUBLICADO') {
+                      <span class="floating-badge badge-tag">{{ obtenerBadge(prod) }}</span>
+                    } @else {
+                      <span class="floating-badge badge-unlisted">NO DISPONIBLE</span>
+                    }
 
-                  <!-- Botón Deslizable Hover -->
-                  <div class="quick-hover-bar">
-                    <button
-                      class="btn-quick-buy"
-                      [disabled]="prod.estadoPublicacion !== 'PUBLICADO'"
-                      (click)="comprar(prod)"
-                    >
-                      <span>AÑADIR AL CARRITO</span>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Info -->
-                <div class="card-details">
-                  <span class="card-category">{{ prod.tipo }}</span>
-                  <h3 class="card-product-name">{{ prod.marca }} - {{ prod.tipo }}</h3>
-
-                  <div class="card-attributes">
-                    <span class="attr-pill">Color: {{ prod.color }}</span>
-                    <span class="attr-pill sku">ID: {{ prod.id }}</span>
-                  </div>
-
-                  <div class="card-price-row">
-                    <span class="price-val">{{ prod.precioMonto | currency: prod.precioMoneda:'symbol':'1.0-0' }}</span>
-                    <span class="price-curr">{{ prod.precioMoneda }}</span>
-                  </div>
-
-                  @if (authService.esAdmin()) {
-                    <div class="admin-panel-strip">
-                      <button (click)="togglePublicacion(prod)" class="btn-admin-act">
-                        {{ prod.estadoPublicacion === 'PUBLICADO' ? 'Despublicar' : 'Publicar' }}
+                    <!-- Botón Wishlist / Favoritos Flotante -->
+                    @if (prod.estadoPublicacion === 'PUBLICADO') {
+                      <button
+                        type="button"
+                        class="btn-wishlist-card"
+                        [class.in-wishlist]="wishlistService.estaEnWishlist(prod.id)"
+                        (click)="toggleWishlist(prod, $event)"
+                        [title]="wishlistService.estaEnWishlist(prod.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : 'none'" [attr.stroke]="wishlistService.estaEnWishlist(prod.id) ? '#e31837' : '#111111'" stroke-width="2">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
                       </button>
-                      <button (click)="eliminar(prod)" class="btn-admin-act btn-delete">Borrar</button>
+                    }
+
+                    <img
+                      [src]="obtenerImagen(prod)"
+                      [alt]="prod.tipo"
+                      (error)="onImgError($event, prod)"
+                      class="card-img"
+                      loading="lazy"
+                    />
+
+                    <!-- Botón Deslizable Hover -->
+                    @if (prod.estadoPublicacion === 'PUBLICADO') {
+                      <div class="quick-hover-bar">
+                        <button
+                          class="btn-quick-buy"
+                          (click)="comprar(prod)"
+                        >
+                          <span>AÑADIR AL CARRITO</span>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    } @else {
+                      <div class="quick-hover-bar quick-bar-unlisted">
+                        <span class="unlisted-hover-text">NO DISPONIBLE PARA COMPRA</span>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Info -->
+                  <div class="card-details">
+                    <span class="card-category">{{ prod.tipo }}</span>
+                    <h3 class="card-product-name">{{ prod.marca }} - {{ prod.tipo }}</h3>
+
+                    <div class="card-attributes">
+                      <span class="attr-pill">Color: {{ prod.color }}</span>
+                      <span class="attr-pill sku">ID: {{ prod.id }}</span>
                     </div>
-                  }
-                </div>
-              </article>
+
+                    <div class="card-price-row">
+                      <span class="price-val">{{ prod.precioMonto | currency: prod.precioMoneda:'symbol':'1.0-0' }}</span>
+                      <span class="price-curr">{{ prod.precioMoneda }}</span>
+                    </div>
+
+                    @if (authService.esAdmin()) {
+                      <div class="admin-panel-strip">
+                        @if (prod.estadoPublicacion === 'PUBLICADO') {
+                          <button
+                            (click)="togglePublicacion(prod)"
+                            class="btn-admin-act btn-unpublish"
+                            title="Ocultar producto de la tienda para clientes"
+                          >
+                            Despublicar
+                          </button>
+                        } @else {
+                          <button
+                            (click)="togglePublicacion(prod)"
+                            class="btn-admin-act btn-republish"
+                            title="Volver a poner disponible en la tienda para clientes"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Volver a poner disponible</span>
+                          </button>
+                        }
+                        <button (click)="eliminar(prod)" class="btn-admin-act btn-delete">Borrar</button>
+                      </div>
+                    }
+                  </div>
+                </article>
+              }
             }
           </div>
 
-          <!-- Paginación -->
+          <!-- Paginación Profesional -->
           @if (totalPaginas() > 1) {
-            <div class="store-pagination">
-              <button class="page-nav-btn" [disabled]="pagina() === 0" (click)="cargarProductos(pagina() - 1)">← Anterior</button>
-              <span class="page-numbers"><strong class="page-current">{{ pagina() + 1 }}</strong> de {{ totalPaginas() }}</span>
-              <button class="page-nav-btn" [disabled]="pagina() + 1 >= totalPaginas()" (click)="cargarProductos(pagina() + 1)">Siguiente →</button>
-            </div>
+            <nav class="store-pagination" aria-label="Navegación de páginas del catálogo">
+              <button
+                type="button"
+                class="page-nav-btn btn-first"
+                [disabled]="pagina() === 0"
+                (click)="cambiarPagina(0)"
+                title="Primera página"
+              >
+                &laquo; Primero
+              </button>
+
+              <button
+                type="button"
+                class="page-nav-btn btn-prev"
+                [disabled]="pagina() === 0"
+                (click)="cambiarPagina(pagina() - 1)"
+                title="Página anterior"
+              >
+                &lsaquo; Anterior
+              </button>
+
+              <div class="page-numbers-group">
+                @for (p of paginasVisibles(); track p) {
+                  <button
+                    type="button"
+                    class="page-number-btn"
+                    [class.page-active]="pagina() === p"
+                    (click)="cambiarPagina(p)"
+                  >
+                    {{ p + 1 }}
+                  </button>
+                }
+              </div>
+
+              <button
+                type="button"
+                class="page-nav-btn btn-next"
+                [disabled]="pagina() + 1 >= totalPaginas()"
+                (click)="cambiarPagina(pagina() + 1)"
+                title="Página siguiente"
+              >
+                Siguiente &rsaquo;
+              </button>
+
+              <button
+                type="button"
+                class="page-nav-btn btn-last"
+                [disabled]="pagina() + 1 >= totalPaginas()"
+                (click)="cambiarPagina(totalPaginas() - 1)"
+                title="Última página"
+              >
+                Último &raquo;
+              </button>
+            </nav>
           }
         }
       }

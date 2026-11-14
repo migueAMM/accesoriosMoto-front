@@ -206,6 +206,199 @@
   color: #e31837;
 }
 
+/* ========================================================
+   SELECTORES DESPLEGABLES CON SCROLLBAR (MARCA / COLOR)
+   ======================================================== */
+.filter-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.filter-header-row .filter-label {
+  margin-bottom: 0;
+}
+
+.btn-clear-single {
+  background: none;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #e31837;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn-clear-single:hover {
+  color: #b8122c;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background-color: #ffffff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.custom-select-trigger:hover {
+  border-color: #111827;
+}
+
+.custom-select-trigger.select-open {
+  border-color: #e31837;
+  box-shadow: 0 0 0 3px rgba(227, 24, 55, 0.12);
+}
+
+.custom-select-trigger.has-selection {
+  border-color: #111827;
+  background-color: #f8fafc;
+}
+
+.trigger-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trigger-content-with-swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  overflow: hidden;
+}
+
+.chevron-svg {
+  color: #6b7280;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.chevron-svg.chevron-rotate {
+  transform: rotate(180deg);
+  color: #e31837;
+}
+
+/* Panel Desplegable con Scroll Interno */
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1.5px solid #111827;
+  border-radius: 6px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* Scrollbar estilizado para no mover el resto de la página */
+.scrollable-panel {
+  scrollbar-width: thin;
+  scrollbar-color: #e31837 #f1f5f9;
+}
+
+.scrollable-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-panel::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.scrollable-panel::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.scrollable-panel::-webkit-scrollbar-thumb:hover {
+  background: #e31837;
+}
+
+.dropdown-option-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.65rem;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.15s ease;
+}
+
+.dropdown-option-item:hover {
+  background-color: #f1f5f9;
+  color: #111827;
+}
+
+.dropdown-option-item.option-selected {
+  background-color: #fef2f2;
+  color: #e31837;
+  font-weight: 800;
+}
+
+.option-content-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.option-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.check-svg {
+  color: #e31837;
+  flex-shrink: 0;
+}
+
+/* Muestra circular de color */
+.color-dot-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.color-dot-swatch.swatch-multi {
+  background: conic-gradient(#e31837, #2563eb, #111827, #eab308, #16a34a, #e31837);
+}
+
 .checkbox-list {
   display: flex;
   flex-direction: column;
@@ -505,17 +698,127 @@
 
 .btn-admin-act {
   flex: 1;
-  padding: 0.35rem;
-  font-size: 0.7rem;
-  font-weight: 700;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-act.btn-unpublish {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.btn-admin-act.btn-unpublish:hover {
+  background-color: #e5e7eb;
+  color: #111827;
+  border-color: #9ca3af;
+}
+
+.btn-admin-act.btn-republish {
+  background-color: #059669;
+  color: #ffffff;
+  border-color: #059669;
+  font-weight: 800;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25);
+}
+
+.btn-admin-act.btn-republish:hover {
+  background-color: #047857;
+  border-color: #047857;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
 }
 
 .btn-admin-act.btn-delete {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.75rem;
   color: #dc2626;
   background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.btn-admin-act.btn-delete:hover {
+  background-color: #fee2e2;
+  border-color: #f87171;
+}
+
+/* ========================================================
+   ESTILOS DE PRODUCTO DESPUBLICADO / INACTIVO (ADMIN VIEW)
+   Tono opaco gris, imagen desaturada, badge "NO DISPONIBLE"
+   ======================================================== */
+.biker-card.product-unlisted {
+  background-color: #f8fafc;
+  border: 1.5px dashed #94a3b8;
+  opacity: 0.68;
+  filter: grayscale(85%);
+  box-shadow: none;
+  transition: opacity 0.25s ease, filter 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.biker-card.product-unlisted:hover {
+  opacity: 0.95;
+  filter: grayscale(20%);
+  border-color: #475569;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.biker-card.product-unlisted .card-img {
+  filter: grayscale(100%);
+  opacity: 0.65;
+}
+
+.biker-card.product-unlisted:hover .card-img {
+  opacity: 0.9;
+}
+
+.biker-card.product-unlisted .card-product-name {
+  color: #64748b;
+}
+
+.biker-card.product-unlisted .card-category {
+  color: #94a3b8;
+}
+
+.biker-card.product-unlisted .price-val {
+  color: #64748b;
+}
+
+.floating-badge.badge-unlisted {
+  left: auto;
+  right: 12px;
+  background-color: #334155;
+  color: #f8fafc;
+  border: 1px solid #1e293b;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.quick-bar-unlisted {
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.unlisted-hover-text {
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-align: center;
+  display: block;
+  width: 100%;
 }
 
 /* Empty State sin emojis */
@@ -558,27 +861,118 @@
   cursor: pointer;
 }
 
+.top-bar-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-indicator-pill {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #4b5563;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.size-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.page-size-select {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #ffffff;
+  color: #111827;
+  cursor: pointer;
+}
+
+.page-size-select:focus {
+  outline: none;
+  border-color: #e31837;
+}
+
 .store-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.4rem;
   margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
 }
 
 .page-nav-btn {
   background-color: #ffffff;
   border: 1px solid #d1d5db;
-  padding: 0.6rem 1.25rem;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 800;
   cursor: pointer;
   border-radius: 4px;
+  color: #374151;
+  transition: all 0.2s ease;
 }
 
 .page-nav-btn:hover:not(:disabled) {
   background-color: #111827;
   color: #ffffff;
+  border-color: #111827;
+}
+
+.page-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background-color: #f9fafb;
+}
+
+.page-numbers-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.page-number-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #374151;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-number-btn:hover:not(.page-active) {
+  border-color: #e31837;
+  color: #e31837;
+}
+
+.page-number-btn.page-active {
+  background-color: #e31837;
+  border-color: #e31837;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(227, 24, 55, 0.25);
 }
 
 .page-current {

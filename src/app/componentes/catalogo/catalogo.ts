@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+﻿import { forkJoin } from 'rxjs';
+import { Component, OnInit, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +28,10 @@ export class Catalogo implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  // Lista de productos
+  // Todos los productos cargados del backend
+  todosLosProductos = signal<ProductoResponse[]>([]);
+
+  // Productos de la página activa que se muestran en la cuadrícula
   productos = signal<ProductoResponse[]>([]);
   cargando = signal<boolean>(false);
   mensaje = signal<string | null>(null);
@@ -38,9 +42,10 @@ export class Catalogo implements OnInit {
 
   // Paginación
   pagina = signal<number>(0);
-  tamano = signal<number>(12);
+  tamano = signal<number>(9);
   totalPaginas = signal<number>(1);
   totalElementos = signal<number>(0);
+  readonly tamanosDisponibles = [9, 18, 27];
 
   // Filtros
   busquedaTexto = '';
@@ -51,8 +56,59 @@ export class Catalogo implements OnInit {
   compatibilidadTipo: '' | TipoCompatibilidad = '';
   compatibilidadModelo = '';
 
-  marcasDisponibles = ['AGV', 'LS2', 'Alpinestars', 'Dainese', 'Givi', 'Cardo', 'Quad Lock'];
-  coloresDisponibles = ['Negro', 'Blanco', 'Azul', 'Gris', 'Transparente'];
+  // Lista completa de marcas (se auto-complementa con la BD)
+  marcasDisponibles: string[] = [
+    'AGV', 'Alpinestars', 'Bell', 'Cardo', 'Cyclone', 'Dainese', 'FreedConn',
+    'Givi', 'HJC', 'Kappa', 'LS2', 'Motowolf', 'Quad Lock', 'RAM Mounts',
+    'Rainwear', 'Revit', 'Sena', 'Shad', 'Shark', 'Shoei'
+  ];
+
+  coloresDisponibles: string[] = [
+    'Negro', 'Blanco', 'Azul', 'Rojo', 'Gris', 'Titanio', 'Verde', 'Amarillo', 'Plata', 'Carbono'
+  ];
+
+  // Estado de los selectores desplegables con scrollbar
+  dropdownMarcasAbierto = signal<boolean>(false);
+  dropdownColoresAbierto = signal<boolean>(false);
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.cerrarDropdowns();
+  }
+
+  toggleDropdownMarcas(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.dropdownMarcasAbierto.update((v) => !v);
+    this.dropdownColoresAbierto.set(false);
+  }
+
+  toggleDropdownColores(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.dropdownColoresAbierto.update((v) => !v);
+    this.dropdownMarcasAbierto.set(false);
+  }
+
+  cerrarDropdowns(): void {
+    this.dropdownMarcasAbierto.set(false);
+    this.dropdownColoresAbierto.set(false);
+  }
+
+  obtenerMuestraColor(color: string): string {
+    const c = (color || '').toLowerCase();
+    if (c.includes('negro')) return '#111827';
+    if (c.includes('blanco')) return '#ffffff';
+    if (c.includes('rojo')) return '#e31837';
+    if (c.includes('azul')) return '#1d4ed8';
+    if (c.includes('gris') || c.includes('asfalto')) return '#6b7280';
+    if (c.includes('titanio') || c.includes('nardo')) return '#475569';
+    if (c.includes('carbon')) return '#18181b';
+    if (c.includes('verde') || c.includes('oliva')) return '#15803d';
+    if (c.includes('amarillo') || c.includes('fluor') || c.includes('neon')) return '#eab308';
+    if (c.includes('plata') || c.includes('metal')) return '#cbd5e1';
+    if (c.includes('marron') || c.includes('arena')) return '#78350f';
+    if (c.includes('transparente')) return '#f8fafc';
+    return '#9ca3af';
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -91,56 +147,205 @@ export class Catalogo implements OnInit {
       queryParams: categoria === 'TODOS' ? {} : { categoria: categoria.toLowerCase() },
     });
 
-    this.cargarProductos(0);
+    this.aplicarFiltrosYPaginar(0);
+  }
+
+  // Clave de almacenamiento local para productos despublicados (asegura persistencia visual para el admin)
+  private readonly STORAGE_DESPUBLICADOS = 'accesorios_admin_despublicados';
+
+  private obtenerDespublicadosLocales(): Record<string, ProductoResponse> {
+    try {
+      const data = localStorage.getItem(this.STORAGE_DESPUBLICADOS);
+      return data ? JSON.parse(data) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private guardarDespublicadoLocal(producto: ProductoResponse): void {
+    try {
+      const mapa = this.obtenerDespublicadosLocales();
+      mapa[producto.id] = { ...producto, estadoPublicacion: 'NO_PUBLICADO' };
+      localStorage.setItem(this.STORAGE_DESPUBLICADOS, JSON.stringify(mapa));
+    } catch {}
+  }
+
+  private removerDespublicadoLocal(productoId: string): void {
+    try {
+      const mapa = this.obtenerDespublicadosLocales();
+      delete mapa[productoId];
+      localStorage.setItem(this.STORAGE_DESPUBLICADOS, JSON.stringify(mapa));
+    } catch {}
   }
 
   cargarProductos(numPagina: number = 0): void {
     this.cargando.set(true);
     this.error.set(null);
-    this.pagina.set(numPagina);
 
-    // Llamamos siempre a listar enviando moneda 'COP' si hay filtros de precio para cumplir con la regla del backend
-    this.catalogoService
-      .listar({
-        marca: this.filtroMarca.trim() || undefined,
-        color: this.filtroColor.trim() || undefined,
-        precioMinimo: this.precioMin ?? undefined,
-        precioMaximo: this.precioMax ?? undefined,
-        moneda: this.precioMin != null || this.precioMax != null ? 'COP' : undefined,
-        tipoCompatibilidad: this.compatibilidadTipo || undefined,
-        modeloCompatibilidad: this.compatibilidadModelo.trim() || undefined,
-        pagina: numPagina,
-        tamano: this.tamano(),
-      })
-      .subscribe({
-        next: (resp) => {
-          let items = resp.content;
+    // Consultamos el catálogo en lotes de 50 para respetar el límite del Backend y consolidar los 160+ productos
+    forkJoin([
+      this.catalogoService.listar({ pagina: 0, tamano: 50 }),
+      this.catalogoService.listar({ pagina: 1, tamano: 50 }),
+      this.catalogoService.listar({ pagina: 2, tamano: 50 }),
+      this.catalogoService.listar({ pagina: 3, tamano: 50 }),
+    ]).subscribe({
+      next: (respuestas) => {
+        const seen = new Set<string>();
+        let items: ProductoResponse[] = [];
+        for (const resp of respuestas) {
+          if (resp && resp.content) {
+            for (const p of resp.content) {
+              if (!seen.has(p.id)) {
+                seen.add(p.id);
+                items.push(p);
+              }
+            }
+          }
+        }
 
-          // 1. Filtrar según la pestaña activa (CASCOS, TEXTIL, ACCESORIOS, REPUESTOS, OUTLET)
-          items = this.filtrarPorCategoria(items);
+          // 1. Filtrar visibilidad según el rol del usuario:
+          if (this.authService.esAdmin()) {
+            const despubMap = this.obtenerDespublicadosLocales();
+            items = items.map((p) => {
+              if (despubMap[p.id]) {
+                return { ...p, estadoPublicacion: 'NO_PUBLICADO' };
+              }
+              return p;
+            });
 
-          // 2. Búsqueda local por texto en marca, tipo, color o ID
-          if (this.busquedaTexto.trim()) {
-            const query = this.busquedaTexto.trim().toLowerCase();
-            items = items.filter(
-              (p) =>
-                (p.marca && p.marca.toLowerCase().includes(query)) ||
-                (p.tipo && p.tipo.toLowerCase().includes(query)) ||
-                (p.color && p.color.toLowerCase().includes(query)) ||
-                (p.id && p.id.toLowerCase().includes(query))
-            );
+            // Si algún producto despublicado fue omitido, conservarlo visible para el admin
+            Object.values(despubMap).forEach((pDespub) => {
+              if (!items.some((p) => p.id === pDespub.id)) {
+                items.unshift(pDespub);
+              }
+            });
+          } else {
+            // Para CLIENTES / VISITANTES: los productos despublicados son estrictamente invisibles
+            items = items.filter((p) => p.estadoPublicacion === 'PUBLICADO');
           }
 
-          this.productos.set(items);
-          this.totalElementos.set(items.length);
-          this.totalPaginas.set(Math.max(1, Math.ceil(items.length / this.tamano())));
+          this.todosLosProductos.set(items);
+          this.actualizarMarcasYColores(items);
+          this.aplicarFiltrosYPaginar(numPagina);
           this.cargando.set(false);
         },
         error: (err) => {
-          this.error.set('No se pudo cargar el catálogo: ' + (err.error?.mensaje || err.message));
+          this.error.set('No se pudo conectar con el catálogo: ' + (err.error?.mensaje || err.message));
           this.cargando.set(false);
         },
       });
+  }
+
+  private actualizarMarcasYColores(items: ProductoResponse[]): void {
+    const marcasSet = new Set<string>(this.marcasDisponibles);
+    const coloresSet = new Set<string>(this.coloresDisponibles);
+
+    items.forEach((p) => {
+      const marcaVal = typeof p.marca === 'string' ? p.marca : ((p.marca as any)?.nombre || '');
+      if (marcaVal && marcaVal.trim()) {
+        marcasSet.add(marcaVal.trim());
+      }
+      if (p.color && typeof p.color === 'string' && p.color.trim()) {
+        const c = p.color.split('/')[0].trim();
+        coloresSet.add(c);
+      }
+    });
+
+    this.marcasDisponibles = Array.from(marcasSet).sort();
+    this.coloresDisponibles = Array.from(coloresSet).sort();
+  }
+
+  aplicarFiltrosYPaginar(numPagina: number = 0): void {
+    let items = [...this.todosLosProductos()];
+
+    // 1. Rol cliente
+    if (!this.authService.esAdmin()) {
+      items = items.filter((p) => p.estadoPublicacion === 'PUBLICADO');
+    }
+
+    // 2. Filtrar por categoría activa
+    items = this.filtrarPorCategoria(items);
+
+    // 3. Filtro por marca
+    if (this.filtroMarca) {
+      items = items.filter((p) => {
+        const marcaVal = typeof p.marca === 'string' ? p.marca : ((p.marca as any)?.nombre || '');
+        return marcaVal.toLowerCase() === this.filtroMarca.toLowerCase();
+      });
+    }
+
+    // 4. Filtro por color
+    if (this.filtroColor) {
+      items = items.filter((p) => p.color && p.color.toLowerCase().includes(this.filtroColor.toLowerCase()));
+    }
+
+    // 5. Filtro por rango de precio
+    if (this.precioMin != null) {
+      items = items.filter((p) => p.precioMonto >= this.precioMin!);
+    }
+    if (this.precioMax != null) {
+      items = items.filter((p) => p.precioMonto <= this.precioMax!);
+    }
+
+    // 6. Búsqueda por texto (marca, tipo, color o ID)
+    if (this.busquedaTexto.trim()) {
+      const query = this.busquedaTexto.trim().toLowerCase();
+      items = items.filter((p) => {
+        const marcaVal = typeof p.marca === 'string' ? p.marca : ((p.marca as any)?.nombre || '');
+        return (
+          marcaVal.toLowerCase().includes(query) ||
+          (p.tipo && p.tipo.toLowerCase().includes(query)) ||
+          (p.color && p.color.toLowerCase().includes(query)) ||
+          (p.id && p.id.toLowerCase().includes(query))
+        );
+      });
+    }
+
+    // 7. Cálculo de paginación
+    const total = items.length;
+    const tam = this.tamano();
+    const paginas = Math.max(1, Math.ceil(total / tam));
+    const pagValida = Math.min(Math.max(0, numPagina), paginas - 1);
+
+    this.totalElementos.set(total);
+    this.totalPaginas.set(paginas);
+    this.pagina.set(pagValida);
+
+    // 8. Rebanada para la página actual
+    const inicio = pagValida * tam;
+    const fin = inicio + tam;
+    this.productos.set(items.slice(inicio, fin));
+  }
+
+  cambiarPagina(num: number): void {
+    if (num < 0 || num >= this.totalPaginas() || num === this.pagina()) return;
+    this.aplicarFiltrosYPaginar(num);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 380, behavior: 'smooth' });
+    }
+  }
+
+  cambiarTamano(nuevoTamano: number): void {
+    this.tamano.set(nuevoTamano);
+    this.aplicarFiltrosYPaginar(0);
+  }
+
+  paginasVisibles(): number[] {
+    const total = this.totalPaginas();
+    const actual = this.pagina();
+    const res: number[] = [];
+
+    let inicio = Math.max(0, actual - 2);
+    let fin = Math.min(total - 1, inicio + 4);
+
+    if (fin - inicio < 4) {
+      inicio = Math.max(0, fin - 4);
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+      res.push(i);
+    }
+    return res;
   }
 
   private filtrarPorCategoria(items: ProductoResponse[]): ProductoResponse[] {
@@ -174,23 +379,26 @@ export class Catalogo implements OnInit {
 
   seleccionarMarca(marca: string): void {
     this.filtroMarca = this.filtroMarca === marca ? '' : marca;
-    this.cargarProductos(0);
+    this.dropdownMarcasAbierto.set(false);
+    this.aplicarFiltrosYPaginar(0);
   }
 
   seleccionarColor(color: string): void {
     this.filtroColor = this.filtroColor === color ? '' : color;
-    this.cargarProductos(0);
+    this.dropdownColoresAbierto.set(false);
+    this.aplicarFiltrosYPaginar(0);
   }
 
   aplicarFiltros(): void {
-    this.cargarProductos(0);
+    this.cerrarDropdowns();
+    this.aplicarFiltrosYPaginar(0);
   }
 
   limpiarFiltros(): void {
     this.limpiarFiltrosInternos();
     this.categoriaActiva.set('TODOS');
     this.router.navigate([], { relativeTo: this.route, queryParams: {} });
-    this.cargarProductos(0);
+    this.aplicarFiltrosYPaginar(0);
   }
 
   private limpiarFiltrosInternos(): void {
@@ -201,6 +409,7 @@ export class Catalogo implements OnInit {
     this.precioMax = null;
     this.compatibilidadTipo = '';
     this.compatibilidadModelo = '';
+    this.cerrarDropdowns();
   }
 
   comprar(producto: ProductoResponse): void {
@@ -211,18 +420,28 @@ export class Catalogo implements OnInit {
     if (producto.estadoPublicacion === 'PUBLICADO') {
       this.catalogoService.despublicar(producto.id).subscribe({
         next: () => {
-          this.mensaje.set(`Producto ${producto.id} despublicado`);
-          this.cargarProductos(this.pagina());
+          this.guardarDespublicadoLocal(producto);
+          this.mensaje.set(`Producto "${producto.marca} ${producto.tipo}" despublicado (oculto para clientes).`);
+          this.todosLosProductos.update((lista) =>
+            lista.map((p) => (p.id === producto.id ? { ...p, estadoPublicacion: 'NO_PUBLICADO' } : p))
+          );
+          this.aplicarFiltrosYPaginar(this.pagina());
+          setTimeout(() => this.mensaje.set(null), 4000);
         },
-        error: (err) => this.error.set('Error: ' + err.message),
+        error: (err) => this.error.set('Error al despublicar: ' + (err.error?.mensaje || err.message)),
       });
     } else {
       this.catalogoService.publicar(producto.id).subscribe({
         next: () => {
-          this.mensaje.set(`Producto ${producto.id} publicado`);
-          this.cargarProductos(this.pagina());
+          this.removerDespublicadoLocal(producto.id);
+          this.mensaje.set(`Producto "${producto.marca} ${producto.tipo}" vuelto a poner disponible en la tienda.`);
+          this.todosLosProductos.update((lista) =>
+            lista.map((p) => (p.id === producto.id ? { ...p, estadoPublicacion: 'PUBLICADO' } : p))
+          );
+          this.aplicarFiltrosYPaginar(this.pagina());
+          setTimeout(() => this.mensaje.set(null), 4000);
         },
-        error: (err) => this.error.set('Error: ' + err.message),
+        error: (err) => this.error.set('Error al publicar: ' + (err.error?.mensaje || err.message)),
       });
     }
   }
@@ -232,9 +451,12 @@ export class Catalogo implements OnInit {
     this.cargando.set(true);
     this.catalogoService.eliminar(producto.id).subscribe({
       next: () => {
+        this.removerDespublicadoLocal(producto.id);
         this.wishlistService.eliminar(producto.id);
         this.mensaje.set(`Producto "${producto.marca} ${producto.tipo}" eliminado del catálogo.`);
-        this.cargarProductos(this.pagina());
+        this.todosLosProductos.update((lista) => lista.filter((p) => p.id !== producto.id));
+        this.aplicarFiltrosYPaginar(this.pagina());
+        this.cargando.set(false);
         setTimeout(() => this.mensaje.set(null), 4000);
       },
       error: (err) => {
@@ -269,6 +491,14 @@ export class Catalogo implements OnInit {
       target.src = '/productos/chaqueta-alpinestars-cuero.jpg';
     } else if (tipo.includes('guante')) {
       target.src = '/productos/guantes-dainese-negro.jpg';
+    } else if (tipo.includes('baul')) {
+      target.src = '/productos/baul-givi-negro.jpg';
+    } else if (tipo.includes('intercom')) {
+      target.src = '/productos/intercomunicador-cardo-gris.jpg';
+    } else if (tipo.includes('soporte')) {
+      target.src = '/productos/soporte-quadlock-negro.jpg';
+    } else if (tipo.includes('visor')) {
+      target.src = '/productos/visor-agv-transparente.jpg';
     } else {
       target.src = '/productos/impermeable-rainwear-azul.jpg';
     }
@@ -276,9 +506,39 @@ export class Catalogo implements OnInit {
 
   obtenerBadge(prod: ProductoResponse): string {
     const t = prod.tipo?.toLowerCase() || '';
-    if (t.includes('casco')) return 'ECE 22.06';
-    if (t.includes('chaqueta')) return 'NIVEL 3';
-    if (prod.precioMonto > 500000) return 'PREMIUM';
+    if (t.includes('casco')) {
+      if (prod.precioMonto >= 2000000) return 'FIM / ECE 22.06';
+      if (prod.precioMonto >= 800000) return 'ECE 22.06';
+      return 'ECE 22.05';
+    }
+    if (t.includes('chaqueta')) {
+      if (prod.precioMonto >= 2000000) return 'CUERO PRO NIVEL 5';
+      if (prod.precioMonto >= 1000000) return 'NIVEL 3 CE';
+      return 'TEXTIL PROTECCIÓN';
+    }
+    if (t.includes('guante')) {
+      if (prod.precioMonto >= 600000) return 'KEVLAR RACING';
+      return 'NUDILLOS CE';
+    }
+    if (t.includes('baul')) {
+      if (prod.precioMonto >= 1500000) return 'ALUMINIO 58L';
+      return 'MONOKEY SYSTEM';
+    }
+    if (t.includes('impermeable')) {
+      return '100% TERMOSELLADO';
+    }
+    if (t.includes('intercom')) {
+      if (prod.precioMonto >= 1000000) return 'DYNAMIC MESH 2.0';
+      return 'BLUETOOTH 5.0';
+    }
+    if (t.includes('soporte')) {
+      return 'ANTI-VIBRACIÓN';
+    }
+    if (t.includes('visor')) {
+      if (prod.color?.toLowerCase().includes('iridium')) return 'IRIDIUM ANTI-RAYAS';
+      return 'PINLOCK READY';
+    }
+    if (prod.precioMonto <= 300000) return 'OUTLET DEAL';
     return 'ORIGINAL';
   }
 
