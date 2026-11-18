@@ -1,0 +1,92 @@
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <span class="text-danger fw-bold text-uppercase fs-7 letter-spacing-1">Historial de Compras</span>
+      <h2 class="fw-black mb-0 text-dark">MIS PEDIDOS</h2>
+    </div>
+    <a routerLink="/catalogo" class="btn btn-outline-dark btn-sm fw-bold">
+      &larr; Volver al Catálogo
+    </a>
+  </div>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Cargando pedidos...</span>
+      </div>
+      <p class="text-muted mt-2">Consultando historial en el backend...</p>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-danger shadow-sm d-flex align-items-center gap-2" role="alert">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div>{{ error() }}</div>
+    </div>
+  } @else if (pedidos().length === 0) {
+    <div class="card shadow-sm text-center py-5 border-0 bg-white rounded-3">
+      <div class="card-body">
+        <div class="mb-3 text-muted">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
+        <h4 class="fw-bold">Aún no tienes pedidos registrados</h4>
+        <p class="text-muted mb-4">Explora el catálogo y adquiere los mejores accesorios y cascos para tu moto.</p>
+        <a routerLink="/catalogo" class="btn btn-danger fw-bold px-4 py-2">
+          EXPLORAR CATÁLOGO
+        </a>
+      </div>
+    </div>
+  } @else {
+    <div class="row g-3">
+      @for (p of pedidos(); track p.id) {
+        <div class="col-12">
+          <div class="card shadow-sm border rounded-3 overflow-hidden">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+              <div>
+                <span class="badge bg-danger me-2">PEDIDO</span>
+                <span class="font-monospace fw-bold">#{{ p.id.substring(0, 8) }}</span>
+                <span class="text-secondary ms-3 small">{{ p.fecha | date:'medium' }}</span>
+              </div>
+              <div>
+                <span class="badge" [ngClass]="{
+                  'bg-success': p.estado === 'COMPLETADO',
+                  'bg-warning text-dark': p.estado === 'PENDIENTE',
+                  'bg-secondary': p.estado === 'CANCELADO'
+                }">{{ p.estado }}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h6 class="fw-bold text-muted text-uppercase fs-7 mb-3">Artículos incluidos:</h6>
+              <div class="list-group list-group-flush mb-3">
+                @for (item of p.items; track item.id) {
+                  <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                    <div>
+                      <span class="fw-bold">Producto ID:</span>
+                      <span class="font-monospace ms-1 text-muted">{{ item.productoId }}</span>
+                      <span class="badge bg-light text-dark border ms-2">x{{ item.cantidad }} u.</span>
+                    </div>
+                    <span class="fw-bold text-dark">
+                      {{ item.subtotalMonto | currency: item.subtotalMoneda:'symbol':'1.0-0' }} {{ item.subtotalMoneda }}
+                    </span>
+                  </div>
+                }
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                <span class="fw-bold text-uppercase">Total Facturado:</span>
+                <span class="fs-5 fw-black text-danger">
+                  {{ p.totalMonto | currency: p.totalMoneda:'symbol':'1.0-0' }} {{ p.totalMoneda }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

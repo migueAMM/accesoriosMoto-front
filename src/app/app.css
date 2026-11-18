@@ -1370,3 +1370,64 @@
 .btn-toast-view-cart:hover {
   background-color: #c4142e;
 }
+
+/* --- Menú Hamburguesa Móvil (Sección 2.8 de la rúbrica) --- */
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  z-index: 1050;
+  display: flex;
+}
+
+.mobile-menu-drawer {
+  width: 320px;
+  max-width: 85vw;
+  height: 100%;
+  background-color: #111827;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  animation: slideInLeft 0.25s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobile-menu-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid #1f2937;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-menu-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.mobile-nav-link {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.65rem 0.5rem;
+  border-radius: 4px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(227, 24, 55, 0.15);
+  padding-left: 0.85rem;
+}
+

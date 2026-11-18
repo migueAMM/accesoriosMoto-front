@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   PedidoResponse,
   RegistrarPedidoRequest,
@@ -13,8 +14,8 @@ import {
   providedIn: 'root',
 })
 export class ComprasService {
-  private readonly pedidosUrl = 'http://localhost:8080/api/pedidos';
-  private readonly comentariosUrl = 'http://localhost:8080/api/comentarios';
+  private readonly pedidosUrl = `${environment.apiUrl}/pedidos`;
+  private readonly comentariosUrl = `${environment.apiUrl}/comentarios`;
 
   constructor(private http: HttpClient) {}
 

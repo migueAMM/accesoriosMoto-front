@@ -1,4 +1,7 @@
 <div class="site-wrapper" (mouseleave)="cerrarMenu()">
+  <!-- Componente Global de Avisos y Notificaciones (Sección 2.7 de la rúbrica) -->
+  <app-avisos></app-avisos>
+
   <!-- Barra Superior -->
   <aside class="top-bar">
     <div class="top-bar-inner">
@@ -144,10 +147,17 @@
 
         @if (authService.estaAutenticado()) {
           <div class="user-profile-menu">
-            <span class="user-greeting">
+            <a routerLink="/mis-pedidos" class="user-greeting text-decoration-none" title="Ver mis pedidos">
               {{ authService.sesion()?.correo?.split('@')?.[0] }}
               <strong class="user-role-tag">{{ authService.sesion()?.rol }}</strong>
-            </span>
+            </a>
+            <a routerLink="/mis-pedidos" class="action-icon-btn btn-orders-link" title="Mis Pedidos (Ruta Privada)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </a>
             <button (click)="cerrarSesion()" class="action-icon-btn" title="Cerrar Sesión">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -196,6 +206,21 @@
           @if (carritoService.cantidadTotal() > 0) {
             <span class="cart-count">{{ carritoService.cantidadTotal() }}</span>
           }
+        </button>
+
+        <!-- Botón Menú Hamburguesa para Móvil (Sección 2.8 de la rúbrica) -->
+        <button
+          type="button"
+          (click)="toggleMenuMovil()"
+          class="action-icon-btn btn-mobile-hamburger d-lg-none"
+          aria-label="Abrir menú de navegación"
+          title="Menú Móvil"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
         </button>
       </div>
     </div>
@@ -740,6 +765,76 @@
       </svg>
       <span>{{ carritoService.notificacion() }}</span>
       <button (click)="toggleCarritoDrawer()" class="btn-toast-view-cart">VER CARRITO</button>
+    </div>
+  }
+
+  <!-- MENÚ RESPONSIVO MÓVIL / MENÚ HAMBURGUESA (Sección 2.8 de la rúbrica) -->
+  @if (menuMovilAbierto()) {
+    <div class="mobile-menu-backdrop" (click)="cerrarMenuMovil()">
+      <aside class="mobile-menu-drawer shadow-lg" (click)="$event.stopPropagation()">
+        <div class="mobile-menu-header">
+          <div class="brand-text">
+            <span class="brand-title">ACCESORIOS<span class="highlight">MOTO</span></span>
+            <span class="brand-sub">MENÚ MÓVIL</span>
+          </div>
+          <button (click)="cerrarMenuMovil()" class="btn-drawer-close" aria-label="Cerrar menú">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="mobile-menu-body">
+          <nav class="d-flex flex-column gap-2">
+            <a routerLink="/inicio" (click)="cerrarMenuMovil()" class="mobile-nav-link">
+              INICIO
+            </a>
+            <a routerLink="/catalogo" [queryParams]="{ categoria: 'cascos' }" (click)="cerrarMenuMovil()" class="mobile-nav-link">
+              CASCOS HOMOLOGADOS
+            </a>
+            <a routerLink="/catalogo" [queryParams]="{ categoria: 'textil' }" (click)="cerrarMenuMovil()" class="mobile-nav-link">
+              CHAQUETAS, GUANTES & TEXTIL
+            </a>
+            <a routerLink="/catalogo" [queryParams]="{ categoria: 'accesorios' }" (click)="cerrarMenuMovil()" class="mobile-nav-link">
+              ACCESORIOS & INTERCOMUNICADORES
+            </a>
+            <a routerLink="/catalogo" [queryParams]="{ categoria: 'repuestos' }" (click)="cerrarMenuMovil()" class="mobile-nav-link">
+              VISORES Y REPUESTOS
+            </a>
+            <a routerLink="/catalogo" [queryParams]="{ outlet: 'true' }" (click)="cerrarMenuMovil()" class="mobile-nav-link text-danger fw-bold">
+              OUTLET MOTERO
+            </a>
+          </nav>
+
+          <hr class="my-3 text-secondary" />
+
+          <div class="d-flex flex-column gap-2">
+            @if (authService.estaAutenticado()) {
+              <div class="p-2 bg-light rounded text-dark small mb-2">
+                Sesión: <strong>{{ authService.sesion()?.correo }}</strong>
+                <span class="badge bg-danger ms-2">{{ authService.sesion()?.rol }}</span>
+              </div>
+              <a routerLink="/mis-pedidos" (click)="cerrarMenuMovil()" class="btn btn-outline-dark fw-bold w-100 text-start d-flex justify-content-between align-items-center">
+                <span>MIS PEDIDOS (Ruta Privada)</span>
+                &rarr;
+              </a>
+              @if (authService.esAdmin()) {
+                <a routerLink="/admin" (click)="cerrarMenuMovil()" class="btn btn-outline-danger fw-bold w-100 text-start d-flex justify-content-between align-items-center">
+                  <span>PANEL ADMINISTRADOR</span>
+                  &rarr;
+                </a>
+              }
+              <button (click)="cerrarSesion(); cerrarMenuMovil()" class="btn btn-danger fw-bold w-100 mt-2">
+                CERRAR SESIÓN
+              </button>
+            } @else {
+              <a routerLink="/login" (click)="cerrarMenuMovil()" class="btn btn-danger fw-bold w-100 py-2">
+                INICIAR SESIÓN / REGISTRO
+              </a>
+            }
+          </div>
+        </div>
+      </aside>
     </div>
   }
 </div>

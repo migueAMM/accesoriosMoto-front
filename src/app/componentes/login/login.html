@@ -36,7 +36,7 @@
             </svg>
             <div>
               <strong>Garantía y Reembolsos</strong>
-              <p>Gestión directa de devoluciones en el sistema.</p>
+              <p>Gestión directa de compras y órdenes en el sistema.</p>
             </div>
           </div>
         </div>
@@ -54,21 +54,29 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </div>
-          <h3 class="session-welcome">SESION ACTIVA</h3>
-          <p class="session-email">{{ authService.sesion()?.correo }}</p>
-          <div class="session-role-pill" [class.admin-role]="authService.esAdmin()">
+          <h3 class="session-welcome">SESIÓN ACTIVA</h3>
+          <p class="session-email font-monospace">{{ authService.sesion()?.correo }}</p>
+          <div class="session-role-pill mb-3" [class.admin-role]="authService.esAdmin()">
             ROL: {{ authService.sesion()?.rol }}
           </div>
 
-          <div class="session-quick-links">
-            <a routerLink="/catalogo" class="btn-primary-action">EXPLORAR CATÁLOGO</a>
-            <button (click)="cerrarSesion()" class="btn-logout-action">Cerrar Sesión</button>
+          <div class="session-quick-links d-flex flex-column gap-2 w-100">
+            <a routerLink="/mis-pedidos" class="btn btn-outline-dark fw-bold py-2">
+              VER MIS PEDIDOS (Ruta Privada)
+            </a>
+            <a routerLink="/catalogo" class="btn btn-danger fw-bold py-2">
+              EXPLORAR CATÁLOGO
+            </a>
+            <button (click)="cerrarSesion()" class="btn btn-link text-muted fw-bold">
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       } @else {
         <!-- Tabs de Selección -->
         <div class="auth-nav-tabs">
           <button
+            type="button"
             class="auth-tab-btn"
             [class.active-tab]="!esModoRegistro()"
             (click)="cambiarModo(false)"
@@ -76,6 +84,7 @@
             INICIAR SESIÓN
           </button>
           <button
+            type="button"
             class="auth-tab-btn"
             [class.active-tab]="esModoRegistro()"
             (click)="cambiarModo(true)"
@@ -86,92 +95,157 @@
 
         <!-- Alertas -->
         @if (mensaje()) {
-          <div class="biker-alert alert-success">{{ mensaje() }}</div>
+          <div class="alert alert-success d-flex align-items-center gap-2 py-2 mb-3" role="alert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="small fw-semibold">{{ mensaje() }}</span>
+          </div>
         }
         @if (error()) {
-          <div class="biker-alert alert-error">{{ error() }}</div>
+          <div class="alert alert-danger d-flex align-items-center gap-2 py-2 mb-3" role="alert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span class="small fw-semibold">{{ error() }}</span>
+          </div>
         }
 
-        <!-- FORMULARIO DE LOGIN -->
+        <!-- Acceso Rápido para Pruebas y Evaluación (Rúbrica 2.11) -->
+        <div class="p-3 mb-3 bg-light border rounded">
+          <span class="d-block text-muted small fw-bold mb-2 text-uppercase">Credenciales de Prueba (Rúbrica 2.11):</span>
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-dark fw-semibold"
+              (click)="llenarCredenciales('admin')"
+            >
+              Admin (admin&#64;accesoriosmoto.com)
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary fw-semibold"
+              (click)="llenarCredenciales('comprador')"
+            >
+              Comprador (comprador&#64;accesoriosmoto.com)
+            </button>
+          </div>
+        </div>
+
+        <!-- FORMULARIO REACTIVO DE LOGIN (Sección 2.2 de la rúbrica) -->
         @if (!esModoRegistro()) {
-          <form (ngSubmit)="iniciarSesion()" class="biker-form">
-            <div class="form-field">
-              <label for="loginEmail">CORREO ELECTRÓNICO</label>
+          <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" class="biker-form">
+            <div class="mb-3">
+              <label for="loginEmail" class="form-label fw-bold text-uppercase fs-7">Correo Electrónico</label>
               <input
                 id="loginEmail"
                 type="email"
-                [(ngModel)]="loginCorreo"
-                name="correo"
+                formControlName="correo"
                 placeholder="ejemplo@correo.com"
-                required
-                class="biker-input"
+                class="form-control biker-input"
+                [class.is-invalid]="loginForm.get('correo')?.touched && loginForm.get('correo')?.invalid"
               />
+              @if (loginForm.get('correo')?.touched && loginForm.get('correo')?.errors?.['required']) {
+                <div class="invalid-feedback d-block">El correo electrónico es obligatorio.</div>
+              }
+              @if (loginForm.get('correo')?.touched && loginForm.get('correo')?.errors?.['email']) {
+                <div class="invalid-feedback d-block">Ingresa un formato de correo válido (ej: usuario@correo.com).</div>
+              }
             </div>
 
-            <div class="form-field">
-              <div class="label-with-link">
-                <label for="loginPass">CONTRASEÑA</label>
-                <a href="#olvido" class="forgot-pass-link">¿Olvidaste tu clave?</a>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="loginPass" class="form-label fw-bold text-uppercase fs-7 mb-0">Contraseña</label>
+                <span class="text-muted small">Mínimo 4 caracteres</span>
               </div>
               <input
                 id="loginPass"
                 type="password"
-                [(ngModel)]="loginClave"
-                name="clave"
+                formControlName="contrasena"
                 placeholder="••••••••"
-                required
-                class="biker-input"
+                class="form-control biker-input"
+                [class.is-invalid]="loginForm.get('contrasena')?.touched && loginForm.get('contrasena')?.invalid"
               />
+              @if (loginForm.get('contrasena')?.touched && loginForm.get('contrasena')?.errors?.['required']) {
+                <div class="invalid-feedback d-block">La contraseña es obligatoria.</div>
+              }
+              @if (loginForm.get('contrasena')?.touched && loginForm.get('contrasena')?.errors?.['minlength']) {
+                <div class="invalid-feedback d-block">La contraseña debe tener al menos 4 caracteres.</div>
+              }
             </div>
 
-            <button type="submit" class="btn-submit-biker" [disabled]="cargando()">
+            <button
+              type="submit"
+              class="btn btn-danger w-100 fw-bold py-2 btn-submit-biker"
+              [disabled]="loginForm.invalid || cargando()"
+            >
               {{ cargando() ? 'INGRESANDO AL SISTEMA...' : 'INICIAR SESIÓN' }}
             </button>
           </form>
         } @else {
-          <!-- FORMULARIO DE REGISTRO COMPRADOR -->
-          <form (ngSubmit)="registrar()" class="biker-form">
-            <div class="form-field">
-              <label for="regName">NOMBRE COMPLETO</label>
+          <!-- FORMULARIO REACTIVO DE REGISTRO COMPRADOR -->
+          <form [formGroup]="registroForm" (ngSubmit)="registrar()" class="biker-form">
+            <div class="mb-3">
+              <label for="regName" class="form-label fw-bold text-uppercase fs-7">Nombre Completo</label>
               <input
                 id="regName"
                 type="text"
-                [(ngModel)]="registroNombre"
-                name="nombre"
+                formControlName="nombre"
                 placeholder="Juan Pérez"
-                required
-                class="biker-input"
+                class="form-control biker-input"
+                [class.is-invalid]="registroForm.get('nombre')?.touched && registroForm.get('nombre')?.invalid"
               />
+              @if (registroForm.get('nombre')?.touched && registroForm.get('nombre')?.errors?.['required']) {
+                <div class="invalid-feedback d-block">El nombre es obligatorio.</div>
+              }
+              @if (registroForm.get('nombre')?.touched && registroForm.get('nombre')?.errors?.['minlength']) {
+                <div class="invalid-feedback d-block">El nombre debe tener mínimo 3 caracteres.</div>
+              }
             </div>
 
-            <div class="form-field">
-              <label for="regMail">CORREO ELECTRÓNICO</label>
+            <div class="mb-3">
+              <label for="regMail" class="form-label fw-bold text-uppercase fs-7">Correo Electrónico</label>
               <input
                 id="regMail"
                 type="email"
-                [(ngModel)]="registroCorreo"
-                name="correo"
+                formControlName="correo"
                 placeholder="juan@correo.com"
-                required
-                class="biker-input"
+                class="form-control biker-input"
+                [class.is-invalid]="registroForm.get('correo')?.touched && registroForm.get('correo')?.invalid"
               />
+              @if (registroForm.get('correo')?.touched && registroForm.get('correo')?.errors?.['required']) {
+                <div class="invalid-feedback d-block">El correo electrónico es obligatorio.</div>
+              }
+              @if (registroForm.get('correo')?.touched && registroForm.get('correo')?.errors?.['email']) {
+                <div class="invalid-feedback d-block">Ingresa un formato de correo válido.</div>
+              }
             </div>
 
-            <div class="form-field">
-              <label for="regPass">CONTRASEÑA (MÍNIMO 8 CARACTERES)</label>
+            <div class="mb-3">
+              <label for="regPass" class="form-label fw-bold text-uppercase fs-7">Contraseña (Mínimo 8 caracteres)</label>
               <input
                 id="regPass"
                 type="password"
-                [(ngModel)]="registroClave"
-                name="clave"
+                formControlName="contrasena"
                 placeholder="••••••••"
-                minlength="8"
-                required
-                class="biker-input"
+                class="form-control biker-input"
+                [class.is-invalid]="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.invalid"
               />
+              @if (registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.errors?.['required']) {
+                <div class="invalid-feedback d-block">La contraseña es obligatoria.</div>
+              }
+              @if (registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.errors?.['minlength']) {
+                <div class="invalid-feedback d-block">La contraseña debe tener mínimo 8 caracteres.</div>
+              }
             </div>
 
-            <button type="submit" class="btn-submit-biker" [disabled]="cargando()">
+            <button
+              type="submit"
+              class="btn btn-danger w-100 fw-bold py-2 btn-submit-biker"
+              [disabled]="registroForm.invalid || cargando()"
+            >
               {{ cargando() ? 'CREANDO CUENTA...' : 'REGISTRARME COMO COMPRADOR' }}
             </button>
           </form>

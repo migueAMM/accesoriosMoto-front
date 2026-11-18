@@ -107,7 +107,8 @@
         <div class="search-input-wrapper">
           <input
             type="text"
-            [(ngModel)]="busquedaTexto"
+            [ngModel]="busquedaTexto"
+            (ngModelChange)="onBusquedaInput($event)"
             placeholder="Buscar modelo o accesorio..."
             (keyup.enter)="aplicarFiltros()"
             class="input-search"
@@ -557,11 +558,11 @@
           </button>
         </div>
 
-        <form (ngSubmit)="guardarNuevoProducto()" class="modal-form">
+        <form [formGroup]="productoForm" (ngSubmit)="guardarNuevoProducto()" class="modal-form">
           <div class="form-row">
             <div class="form-field">
               <label class="field-label">TIPO DE PRODUCTO</label>
-              <select [(ngModel)]="nuevoProducto.tipo" name="tipo" (change)="onTipoProductoChange()" class="form-select">
+              <select formControlName="tipo" (change)="onTipoProductoChange()" class="form-select">
                 <option value="Casco">Casco</option>
                 <option value="Chaqueta">Chaqueta</option>
                 <option value="Guantes">Guantes</option>
@@ -574,33 +575,60 @@
             </div>
 
             <div class="form-field">
-              <label class="field-label">MARCA</label>
-              <input type="text" [(ngModel)]="nuevoProducto.marcaNombre" name="marcaNombre" class="form-input" required />
+              <label class="field-label">MARCA *</label>
+              <input
+                type="text"
+                formControlName="marcaNombre"
+                class="form-control"
+                [class.is-invalid]="campoInvalido('marcaNombre')"
+                placeholder="Ej. AGV, Alpinestars..."
+              />
+              @if (campoInvalido('marcaNombre')) {
+                <div class="invalid-feedback">La marca es requerida (mínimo 2 caracteres).</div>
+              }
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">COLOR</label>
-              <input type="text" [(ngModel)]="nuevoProducto.color" name="color" class="form-input" required />
+              <label class="field-label">COLOR *</label>
+              <input
+                type="text"
+                formControlName="color"
+                class="form-control"
+                [class.is-invalid]="campoInvalido('color')"
+                placeholder="Ej. Negro Mate, Rojo..."
+              />
+              @if (campoInvalido('color')) {
+                <div class="invalid-feedback">El color del producto es obligatorio.</div>
+              }
             </div>
 
             <div class="form-field">
-              <label class="field-label">PRECIO (COP)</label>
-              <input type="number" [(ngModel)]="nuevoProducto.precioMonto" name="precioMonto" class="form-input" required min="1000" />
+              <label class="field-label">PRECIO (COP) *</label>
+              <input
+                type="number"
+                formControlName="precioMonto"
+                class="form-control"
+                [class.is-invalid]="campoInvalido('precioMonto')"
+                min="1000"
+              />
+              @if (campoInvalido('precioMonto')) {
+                <div class="invalid-feedback">El precio debe ser un número mayor o igual a $1.000 COP.</div>
+              }
             </div>
           </div>
 
           <!-- Campos para Casco -->
-          @if (nuevoProducto.tipo === 'Casco') {
+          @if (productoForm.get('tipo')?.value === 'Casco') {
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MODELO</label>
-                <input type="text" [(ngModel)]="nuevoProducto.modelo" name="modelo" class="form-input" placeholder="Ej. K3 SV Racing" required />
+                <input type="text" formControlName="modelo" class="form-control" placeholder="Ej. K3 SV Racing" />
               </div>
               <div class="form-field">
                 <label class="field-label">TALLA</label>
-                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                <select formControlName="talla" class="form-select">
                   @for (t of tallasDisponibles; track t) {
                     <option [value]="t">Talla {{ t }}</option>
                   }
@@ -610,7 +638,7 @@
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">NIVEL DE PROTECCIÓN</label>
-                <select [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input">
+                <select formControlName="proteccion" class="form-select">
                   @for (np of nivelesProteccion; track np.valor) {
                     <option [value]="np.valor">{{ np.label }}</option>
                   }
@@ -618,17 +646,17 @@
               </div>
               <div class="form-field">
                 <label class="field-label">CERTIFICACIÓN</label>
-                <input type="text" [(ngModel)]="nuevoProducto.certificacionSeguridad" name="certificacionSeguridad" class="form-input" placeholder="ECE 22.06 / DOT" required />
+                <input type="text" formControlName="certificacionSeguridad" class="form-control" placeholder="ECE 22.06 / DOT" />
               </div>
             </div>
           }
 
           <!-- Campos para Chaqueta o Guantes -->
-          @if (nuevoProducto.tipo === 'Chaqueta' || nuevoProducto.tipo === 'Guantes') {
+          @if (productoForm.get('tipo')?.value === 'Chaqueta' || productoForm.get('tipo')?.value === 'Guantes') {
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MATERIAL</label>
-                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                <select formControlName="material" class="form-select">
                   @for (m of materiales; track m.valor) {
                     <option [value]="m.valor">{{ m.label }}</option>
                   }
@@ -636,7 +664,7 @@
               </div>
               <div class="form-field">
                 <label class="field-label">TALLA</label>
-                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                <select formControlName="talla" class="form-select">
                   @for (t of tallasDisponibles; track t) {
                     <option [value]="t">Talla {{ t }}</option>
                   }
@@ -645,7 +673,7 @@
             </div>
             <div class="form-field">
               <label class="field-label">NIVEL DE PROTECCIÓN</label>
-              <select [(ngModel)]="nuevoProducto.proteccion" name="proteccion" class="form-input">
+              <select formControlName="proteccion" class="form-select">
                 @for (np of nivelesProteccion; track np.valor) {
                   <option [value]="np.valor">{{ np.label }}</option>
                 }
@@ -654,11 +682,11 @@
           }
 
           <!-- Campos para Impermeable -->
-          @if (nuevoProducto.tipo === 'Impermeable') {
+          @if (productoForm.get('tipo')?.value === 'Impermeable') {
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MATERIAL</label>
-                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                <select formControlName="material" class="form-select">
                   @for (m of materiales; track m.valor) {
                     <option [value]="m.valor">{{ m.label }}</option>
                   }
@@ -666,7 +694,7 @@
               </div>
               <div class="form-field">
                 <label class="field-label">TALLA</label>
-                <select [(ngModel)]="nuevoProducto.talla" name="talla" class="form-input">
+                <select formControlName="talla" class="form-select">
                   @for (t of tallasDisponibles; track t) {
                     <option [value]="t">Talla {{ t }}</option>
                   }
@@ -676,11 +704,11 @@
           }
 
           <!-- Campos para Baúl -->
-          @if (nuevoProducto.tipo === 'Baul') {
+          @if (productoForm.get('tipo')?.value === 'Baul') {
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">MATERIAL</label>
-                <select [(ngModel)]="nuevoProducto.material" name="material" class="form-input">
+                <select formControlName="material" class="form-select">
                   @for (m of materiales; track m.valor) {
                     <option [value]="m.valor">{{ m.label }}</option>
                   }
@@ -688,36 +716,36 @@
               </div>
               <div class="form-field">
                 <label class="field-label">CAPACIDAD (LITROS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.capacidadLitros" name="capacidadLitros" class="form-input" min="1" />
+                <input type="number" formControlName="capacidadLitros" class="form-control" min="1" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">CARGA MÁXIMA (KG)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.capacidadMaximaCarga" name="capacidadMaximaCarga" class="form-input" min="1" />
+                <input type="number" formControlName="capacidadMaximaCarga" class="form-control" min="1" />
               </div>
               <div class="form-field">
                 <label class="field-label">DIMENSIONES</label>
-                <input type="text" [(ngModel)]="nuevoProducto.dimensiones" name="dimensiones" class="form-input" placeholder="45x40x32 cm" />
+                <input type="text" formControlName="dimensiones" class="form-control" placeholder="45x40x32 cm" />
               </div>
             </div>
           }
 
           <!-- Campos para Intercomunicador -->
-          @if (nuevoProducto.tipo === 'Intercomunicador') {
+          @if (productoForm.get('tipo')?.value === 'Intercomunicador') {
             <div class="form-row">
               <div class="form-field">
                 <label class="field-label">ALCANCE (METROS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.alcanceMetros" name="alcanceMetros" class="form-input" min="10" />
+                <input type="number" formControlName="alcanceMetros" class="form-control" min="10" />
               </div>
               <div class="form-field">
                 <label class="field-label">AUTONOMÍA (HORAS)</label>
-                <input type="number" [(ngModel)]="nuevoProducto.autonomiaHoras" name="autonomiaHoras" class="form-input" min="1" />
+                <input type="number" formControlName="autonomiaHoras" class="form-control" min="1" />
               </div>
             </div>
             <div class="form-field">
               <label class="field-label">TECNOLOGÍA BLUETOOTH</label>
-              <select [(ngModel)]="nuevoProducto.bluetooth" name="bluetooth" class="form-input">
+              <select formControlName="bluetooth" class="form-select">
                 <option [ngValue]="true">Sí (Bluetooth Integrado)</option>
                 <option [ngValue]="false">No (Solo conexión cable / análoga)</option>
               </select>
@@ -725,18 +753,18 @@
           }
 
           <!-- Campos para Soporte Celular -->
-          @if (nuevoProducto.tipo === 'SoporteCelular') {
+          @if (productoForm.get('tipo')?.value === 'SoporteCelular') {
             <div class="form-field">
               <label class="field-label">TIPO DE SUJECIÓN</label>
-              <input type="text" [(ngModel)]="nuevoProducto.tipoSujecion" name="tipoSujecion" class="form-input" placeholder="Manubrio, Espejo retrovisor" />
+              <input type="text" formControlName="tipoSujecion" class="form-control" placeholder="Manubrio, Espejo retrovisor" />
             </div>
           }
 
           <!-- Campos para Visor -->
-          @if (nuevoProducto.tipo === 'Visor') {
+          @if (productoForm.get('tipo')?.value === 'Visor') {
             <div class="form-field">
               <label class="field-label">TIPO DE VISOR</label>
-              <input type="text" [(ngModel)]="nuevoProducto.tipoVisor" name="tipoVisor" class="form-input" placeholder="Transparente, Humo oscuro, Iridium Azul" />
+              <input type="text" formControlName="tipoVisor" class="form-control" placeholder="Transparente, Humo oscuro, Iridium Azul" />
             </div>
           }
 
@@ -748,16 +776,16 @@
                 <button
                   type="button"
                   class="btn-mode-tab"
-                  [class.active]="nuevoProducto.modoImagen === 'preset'"
-                  (click)="nuevoProducto.modoImagen = 'preset'"
+                  [class.active]="productoForm.get('modoImagen')?.value === 'preset'"
+                  (click)="productoForm.patchValue({ modoImagen: 'preset' })"
                 >
                   Galería Oficial
                 </button>
                 <button
                   type="button"
                   class="btn-mode-tab"
-                  [class.active]="nuevoProducto.modoImagen === 'descargados'"
-                  (click)="nuevoProducto.modoImagen = 'descargados'"
+                  [class.active]="productoForm.get('modoImagen')?.value === 'descargados'"
+                  (click)="productoForm.patchValue({ modoImagen: 'descargados' })"
                 >
                   Foto desde Descargas
                 </button>
@@ -765,13 +793,13 @@
             </div>
 
             <!-- Opción 1: Galería oficial de estudio -->
-            @if (nuevoProducto.modoImagen === 'preset') {
+            @if (productoForm.get('modoImagen')?.value === 'preset') {
               <div class="presets-gallery-grid">
                 @for (preset of imagenesService.presets; track preset.url) {
                   <button
                     type="button"
                     class="preset-thumb-btn"
-                    [class.selected]="nuevoProducto.imagenUrl === preset.url"
+                    [class.selected]="productoForm.get('imagenUrl')?.value === preset.url"
                     (click)="seleccionarPreset(preset.url)"
                     [title]="preset.nombre"
                   >
@@ -783,7 +811,7 @@
             }
 
             <!-- Opción 2: Foto cargada desde Descargas mediante ruta estática rápida -->
-            @if (nuevoProducto.modoImagen === 'descargados') {
+            @if (productoForm.get('modoImagen')?.value === 'descargados') {
               <div class="downloads-photo-container">
                 <div class="download-featured-card">
                   <div class="download-featured-info">
@@ -794,10 +822,10 @@
                   <button
                     type="button"
                     class="btn-select-download"
-                    [class.active]="nuevoProducto.imagenUrl === '/productos/casco-scorpion-exo.jpg'"
+                    [class.active]="productoForm.get('imagenUrl')?.value === '/productos/casco-scorpion-exo.jpg'"
                     (click)="seleccionarPreset('/productos/casco-scorpion-exo.jpg')"
                   >
-                    {{ nuevoProducto.imagenUrl === '/productos/casco-scorpion-exo.jpg' ? 'Seleccionado' : 'Usar esta foto' }}
+                    {{ productoForm.get('imagenUrl')?.value === '/productos/casco-scorpion-exo.jpg' ? 'Seleccionado' : 'Usar esta foto' }}
                   </button>
                 </div>
 
@@ -827,10 +855,10 @@
               <span class="preview-badge">Vista previa en tienda:</span>
               <div class="preview-box">
                 <img
-                  [src]="nuevoProducto.previewImagen || nuevoProducto.imagenUrl"
+                  [src]="productoForm.get('previewImagen')?.value || productoForm.get('imagenUrl')?.value"
                   alt="Vista previa"
                   class="preview-img"
-                  (error)="nuevoProducto.previewImagen = '/productos/casco-scorpion-exo.jpg'"
+                  (error)="productoForm.patchValue({ previewImagen: '/productos/casco-scorpion-exo.jpg' })"
                 />
               </div>
             </div>
@@ -838,7 +866,7 @@
 
           <div class="modal-footer">
             <button type="button" (click)="cerrarModalCrear()" class="btn-cancel">Cancelar</button>
-            <button type="submit" [disabled]="guardandoProducto()" class="btn-submit-product">
+            <button type="submit" [disabled]="productoForm.invalid || guardandoProducto()" class="btn-submit-product">
               {{ guardandoProducto() ? 'Guardando en BD...' : 'Crear Producto en Backend' }}
             </button>
           </div>

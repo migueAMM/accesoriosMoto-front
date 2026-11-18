@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   LoginRequest,
   RegistrarCompradorRequest,
@@ -13,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:8080/api/auth';
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'accesorios_moto_token';
   private readonly userKey = 'accesorios_moto_user';
 

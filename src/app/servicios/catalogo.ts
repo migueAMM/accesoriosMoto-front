@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   ProductoResponse,
   ProductoVentasResponse,
@@ -13,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class CatalogoService {
-  private readonly baseUrl = 'http://localhost:8080/api/productos';
+  private readonly baseUrl = `${environment.apiUrl}/productos`;
 
   constructor(private http: HttpClient) {}
 

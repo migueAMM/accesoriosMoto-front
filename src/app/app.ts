@@ -7,12 +7,14 @@ import { WishlistService } from './servicios/wishlist';
 import { CarritoService } from './servicios/carrito';
 import { ComprasService } from './servicios/compras';
 import { ImagenesProductoService } from './servicios/imagenes-producto';
+import { AvisosService } from './servicios/avisos';
+import { Avisos } from './componentes/avisos/avisos';
 import { ProductoResponse } from './modelos/catalogo';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FormsModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FormsModule, Avisos],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -22,10 +24,14 @@ export class App {
   public carritoService = inject(CarritoService);
   public comprasService = inject(ComprasService);
   public imagenesService = inject(ImagenesProductoService);
+  public avisosService = inject(AvisosService);
   private router = inject(Router);
 
-  // Control del Mega Menú
+  // Control del Mega Menú de escritorio
   menuAbierto = signal<string | null>(null);
+
+  // Control del Menú Móvil Hamburguesa (Sección 2.8 de la rúbrica)
+  menuMovilAbierto = signal<boolean>(false);
 
   // Buscador integrado en el header
   busquedaHeader = '';
@@ -35,6 +41,14 @@ export class App {
   procesandoPedido = signal<boolean>(false);
   mensajePedido = signal<string | null>(null);
   errorPedido = signal<string | null>(null);
+
+  toggleMenuMovil(): void {
+    this.menuMovilAbierto.update((v) => !v);
+  }
+
+  cerrarMenuMovil(): void {
+    this.menuMovilAbierto.set(false);
+  }
 
   abrirMenu(menu: string): void {
     this.menuAbierto.set(menu);
@@ -104,7 +118,9 @@ export class App {
   finalizarCompra(): void {
     const usuario = this.authService.getUsuarioActual();
     if (!usuario || !usuario.id) {
-      this.errorPedido.set('Inicia sesión con tu cuenta de comprador para finalizar tu pedido.');
+      const msg = 'Inicia sesión con tu cuenta de comprador para finalizar tu pedido.';
+      this.errorPedido.set(msg);
+      this.avisosService.advertencia(msg);
       setTimeout(() => {
         this.carritoService.cerrarDrawer();
         this.router.navigate(['/login']);
@@ -114,7 +130,9 @@ export class App {
     }
 
     if (usuario.rol === 'ADMINISTRADOR') {
-      this.errorPedido.set('La cuenta activa es Administrador. Inicia sesión con cuenta Comprador para ordenar.');
+      const msg = 'La cuenta activa es Administrador. Inicia sesión con cuenta Comprador para ordenar.';
+      this.errorPedido.set(msg);
+      this.avisosService.advertencia(msg);
       return;
     }
 
@@ -136,20 +154,23 @@ export class App {
       .subscribe({
         next: (pedido) => {
           this.procesandoPedido.set(false);
-          this.mensajePedido.set(
-            `¡Pedido confirmado con éxito! Código: ${pedido.id.substring(0, 8)}`
-          );
+          const exitoMsg = `¡Pedido #${pedido.id.substring(0, 8)} confirmado con éxito!`;
+          this.mensajePedido.set(exitoMsg);
+          this.avisosService.exito(exitoMsg);
           this.carritoService.limpiar();
           setTimeout(() => {
             this.mensajePedido.set(null);
             this.carritoService.cerrarDrawer();
-          }, 4500);
+          }, 3500);
         },
         error: (err) => {
           this.procesandoPedido.set(false);
-          this.errorPedido.set(
-            'Error al procesar pedido: ' + (err.error?.mensaje || err.message || 'Error de servidor')
+          const msg = this.avisosService.traducirErrorHttp(
+            err.status,
+            'Error al procesar el pedido con el backend.'
           );
+          this.errorPedido.set(msg);
+          this.avisosService.error(msg);
         },
       });
   }
